@@ -1,12 +1,13 @@
 import './App.css'
-import SPA from './app/views/spa'
+import AppRoutes from './app/routes/AppRoutes'
+
 
 function App() {
 
 
   return (
     <>
-      <SPA/>
+      <AppRoutes/>
     </>
   )
 }

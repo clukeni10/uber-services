@@ -7,20 +7,19 @@ import {
   HStack,
   IconButton,
   Button,
-  Text,
   VStack,
+  Link,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { LuSettings, LuMenu, LuX } from "react-icons/lu";
 
-const navLinks = ["Início", "Serviços", "Profissionais", "Como Funciona"];
+const navLinks = ["Início", "Serviços", "Profissionais"];
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Box as="header" bg={blue} position="sticky" top={0} zIndex={100} w="100%">
-      {/* Barra principal */}
       <Flex
         px={{ base: 4, md: 8 }}
         h="64px"
@@ -29,7 +28,6 @@ export default function Header() {
         maxW="1280px"
         mx="auto"
       >
-        {/* Logo */}
         <Flex align="center" gap={3}>
           <Box
             w="42px"
@@ -53,12 +51,10 @@ export default function Header() {
           </Heading>
         </Flex>
 
-        {/* Nav desktop */}
         <HStack gap={7} display={{ base: "none", md: "flex" }}>
           {navLinks.map((link) => (
-            <Text
+            <Link
               key={link}
-              as="a"
               href="#"
               color={white}
               fontSize="sm"
@@ -72,7 +68,7 @@ export default function Header() {
               transition="opacity 0.2s"
             >
               {link}
-            </Text>
+            </Link>
           ))}
           <Button
             bg={orange}
@@ -86,7 +82,7 @@ export default function Header() {
             _active={{ transform: "scale(0.97)" }}
             transition="all 0.2s"
           >
-            Entrar
+            <Link href="/login" color={white} textDecoration="none">Entrar</Link>
           </Button>
         </HStack>
 
@@ -103,7 +99,6 @@ export default function Header() {
         </IconButton>
       </Flex>
 
-      {/* Menu mobile — animado via CSS max-height */}
       <Box
         display={{ md: "none" }}
         overflow="hidden"
@@ -113,9 +108,8 @@ export default function Header() {
       >
         <VStack align="stretch" gap={0} px={4} pb={4}>
           {navLinks.map((link) => (
-            <Text
+            <Link
               key={link}
-              as="a"
               href="#"
               color={white}
               fontSize="md"
@@ -127,7 +121,7 @@ export default function Header() {
               transition="padding 0.15s"
             >
               {link}
-            </Text>
+            </Link>
           ))}
           <Button
             mt={4}
