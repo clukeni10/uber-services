@@ -14,6 +14,7 @@ import {
   Field,
   Input,
   Button,
+  Spinner,
 } from "@chakra-ui/react";
 import {
   LuPencil,
@@ -24,50 +25,11 @@ import {
   LuClock,
   LuHeart,
   LuStar,
+  LuX,
 } from "react-icons/lu";
 import { useState } from "react";
-
-interface InfoItemProps {
-  icon: React.ElementType;
-  label: string;
-  value: string;
-}
-
-function InfoItem({ icon: Icon, label, value }: InfoItemProps) {
-  return (
-    <VStack gap="1" align="center" flex="1">
-      <Flex
-        w="38px"
-        h="38px"
-        rounded="full"
-        bg={`${blue}15`}
-        alignItems="center"
-        justifyContent="center"
-        color={blue}
-        fontSize="16px"
-      >
-        <Icon />
-      </Flex>
-      <Text
-        fontSize="9px"
-        color="gray.400"
-        fontWeight="semibold"
-        letterSpacing="wide"
-        textTransform="uppercase"
-      >
-        {label}
-      </Text>
-      <Text
-        fontSize="11px"
-        color="gray.600"
-        fontWeight="medium"
-        textAlign="center"
-      >
-        {value}
-      </Text>
-    </VStack>
-  );
-}
+import InfoItem from "../components/infoItem";
+import Sidebar from "../components/sidebar";
 
 export default function ClientProfile() {
   const { user, loading, handleUpdate } = useUser();
@@ -82,7 +44,6 @@ export default function ClientProfile() {
     created_at: "",
   });
 
-  // Preenche o form quando o user carrega
   function onOpenChange(open: boolean) {
     if (open && user) {
       setForm({
@@ -90,9 +51,9 @@ export default function ClientProfile() {
         email: user.email ?? "",
         phone: user.phone ?? "",
         address: user.address ?? "",
-        birthday: user.birthday ?? "",
+        birthday: user.birthday ? user.birthday.split("T")[0] : "",
         image: user.image ?? "",
-        created_at:user.created_at ?? "",
+        created_at: user.created_at ?? "",
       });
     }
   }
@@ -101,22 +62,52 @@ export default function ClientProfile() {
     await handleUpdate(form);
   }
 
-  if (loading) return <Text>A carregar...</Text>;
+  if (loading)
+    return (
+      <Flex alignItems="center" justifyContent="center" h="100vh">
+        <VStack gap="3">
+          <Spinner color={blue} size="xl" animationDuration="0.8s" />
+          <Text color={blue} fontSize="sm" fontWeight="medium">
+            A carregar...
+          </Text>
+        </VStack>
+      </Flex>
+    );
 
   return (
-    <Box h="100vh">
-      <Flex flexDir="column" h="100%">
-        {/* Top */}
-        <Box
-          h="50%"
-          bg={blue}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Box w="70vw" bg={white} rounded="xl" p="6" shadow="lg">
-            <HStack justify="space-between" align="flex-start">
-              <HStack gap="4" align="center">
+    <Box display="flex" h="100vh" bg="gray.50">
+      <Sidebar />
+
+      <Box flex="1" ml="220px" overflow="auto">
+        <Box maxW="1100px" mx="auto" px="8" py="8">
+          {/* Card de perfil */}
+          <Box
+            bg={white}
+            borderRadius="2xl"
+            shadow="sm"
+            border="1px solid"
+            borderColor="gray.100"
+            overflow="hidden"
+          >
+            {/* Banner azul */}
+            <Box bg={blue} h="100px" position="relative">
+              <Box
+                position="absolute"
+                inset="0"
+                opacity={0.08}
+                backgroundImage="linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)"
+                backgroundSize="32px 32px"
+              />
+            </Box>
+
+            {/* Avatar + info */}
+            <Box px="6" pb="6">
+              <HStack
+                justify="space-between"
+                align="flex-end"
+                mt="-36px"
+                mb="4"
+              >
                 <Flex
                   bg={blue}
                   w="72px"
@@ -125,284 +116,278 @@ export default function ClientProfile() {
                   alignItems="center"
                   justifyContent="center"
                   color={white}
-                  fontSize="xl"
+                  fontSize="2xl"
                   fontWeight="bold"
+                  border="4px solid"
+                  borderColor={white}
+                  shadow="md"
                   flexShrink={0}
                 >
                   {user?.name?.charAt(0).toUpperCase() ?? "?"}
                 </Flex>
 
-                <VStack align="flex-start" gap="0.5">
-                  <Heading fontSize="lg" fontWeight="bold" color="gray.800">
-                    {user?.name}
-                  </Heading>
-                  <Text fontSize="xs" color="gray.400">
-                    Membro desde {new Date(user?.created_at).getFullYear()}
-                  </Text>
-                </VStack>
+                {/* Botão editar */}
+                <Dialog.Root
+                  onOpenChange={(e) => onOpenChange(e.open)}
+                  size={{ mdDown: "full", md: "lg" }}
+                >
+                  <Dialog.Trigger asChild>
+                    <IconButton
+                      aria-label="Editar perfil"
+                      variant="ghost"
+                      size="sm"
+                      color={blue}
+                      _hover={{ bg: `${blue}15` }}
+                    >
+                      <LuPencil />
+                    </IconButton>
+                  </Dialog.Trigger>
+                  <Portal>
+                    <Dialog.Backdrop />
+                    <Dialog.Positioner>
+                      <Dialog.Content borderRadius="2xl" p="2">
+                        <Dialog.Header pb="0">
+                          <HStack
+                            justify="space-between"
+                            align="center"
+                            w="full"
+                          >
+                            <Dialog.Title
+                              fontSize="lg"
+                              fontWeight="bold"
+                              color="gray.800"
+                            >
+                              Editar Perfil
+                            </Dialog.Title>
+                            <Dialog.ActionTrigger asChild>
+                              <IconButton
+                                aria-label="Fechar"
+                                variant="ghost"
+                                size="sm"
+                                color="gray.400"
+                                _hover={{ color: "gray.600", bg: "gray.100" }}
+                              >
+                                <LuX />
+                              </IconButton>
+                            </Dialog.ActionTrigger>
+                          </HStack>
+                        </Dialog.Header>
+                        <Dialog.Body py="4">
+                          <Box
+                            display="grid"
+                            gridTemplateColumns="1fr 1fr"
+                            gap="3"
+                          >
+                            <Field.Root required>
+                              <Field.Label
+                                fontSize="xs"
+                                color="gray.500"
+                                fontWeight="semibold"
+                              >
+                                Nome
+                              </Field.Label>
+                              <Input
+                                size="sm"
+                                borderRadius="lg"
+                                value={form.name}
+                                onChange={(e) =>
+                                  setForm({ ...form, name: e.target.value })
+                                }
+                              />
+                            </Field.Root>
+                            <Field.Root required>
+                              <Field.Label
+                                fontSize="xs"
+                                color="gray.500"
+                                fontWeight="semibold"
+                              >
+                                Email
+                              </Field.Label>
+                              <Input
+                                size="sm"
+                                borderRadius="lg"
+                                value={form.email}
+                                onChange={(e) =>
+                                  setForm({ ...form, email: e.target.value })
+                                }
+                              />
+                            </Field.Root>
+                            <Field.Root>
+                              <Field.Label
+                                fontSize="xs"
+                                color="gray.500"
+                                fontWeight="semibold"
+                              >
+                                Telefone
+                              </Field.Label>
+                              <Input
+                                size="sm"
+                                borderRadius="lg"
+                                value={form.phone}
+                                onChange={(e) =>
+                                  setForm({ ...form, phone: e.target.value })
+                                }
+                              />
+                            </Field.Root>
+                            <Field.Root>
+                              <Field.Label
+                                fontSize="xs"
+                                color="gray.500"
+                                fontWeight="semibold"
+                              >
+                                Aniversário
+                              </Field.Label>
+                              <Input
+                                size="sm"
+                                borderRadius="lg"
+                                type="date"
+                                value={form.birthday}
+                                onChange={(e) =>
+                                  setForm({ ...form, birthday: e.target.value })
+                                }
+                              />
+                            </Field.Root>
+                            <Field.Root gridColumn="span 2">
+                              <Field.Label
+                                fontSize="xs"
+                                color="gray.500"
+                                fontWeight="semibold"
+                              >
+                                Endereço
+                              </Field.Label>
+                              <Input
+                                size="sm"
+                                borderRadius="lg"
+                                value={form.address}
+                                onChange={(e) =>
+                                  setForm({ ...form, address: e.target.value })
+                                }
+                              />
+                            </Field.Root>
+                          </Box>
+                        </Dialog.Body>
+                        <Dialog.Footer pt="0">
+                          <Dialog.ActionTrigger asChild>
+                            <Button
+                              bg={blue}
+                              color={white}
+                              borderRadius="lg"
+                              w="full"
+                              onClick={onSave}
+                            >
+                              Guardar alterações
+                            </Button>
+                          </Dialog.ActionTrigger>
+                        </Dialog.Footer>
+                      </Dialog.Content>
+                    </Dialog.Positioner>
+                  </Portal>
+                </Dialog.Root>
               </HStack>
 
-              {/* Modal de Edição */}
-              <Dialog.Root onOpenChange={(e) => onOpenChange(e.open)}>
-                <Dialog.Trigger asChild>
-                  <IconButton
-                    aria-label="Editar perfil"
-                    variant="ghost"
-                    size="sm"
-                    color={blue}
-                    _hover={{ bg: `${blue}15` }}
-                  >
-                    <LuPencil />
-                  </IconButton>
-                </Dialog.Trigger>
-                <Portal>
-                  <Dialog.Backdrop />
-                  <Dialog.Positioner>
-                    <Dialog.Content>
-                      <Dialog.Header>
-                        <Dialog.Title>Editar Perfil</Dialog.Title>
-                      </Dialog.Header>
+              <Heading fontSize="lg" fontWeight="bold" color="gray.800">
+                {user?.name}
+              </Heading>
+              <Text fontSize="xs" color="gray.400" mt="0.5">
+                Membro desde {new Date(user?.created_at).getFullYear()}
+              </Text>
 
-                      <Dialog.Body>
-                        <VStack gap="3">
-                          <Field.Root required>
-                            <Field.Label>Nome</Field.Label>
-                            <Input
-                              value={form.name}
-                              onChange={(e) =>
-                                setForm({ ...form, name: e.target.value })
-                              }
-                            />
-                          </Field.Root>
+              <Separator my="4" borderColor="gray.100" />
 
-                          <Field.Root required>
-                            <Field.Label>Email</Field.Label>
-                            <Input
-                              value={form.email}
-                              onChange={(e) =>
-                                setForm({ ...form, email: e.target.value })
-                              }
-                            />
-                          </Field.Root>
-
-                          <Field.Root>
-                            <Field.Label>Telefone</Field.Label>
-                            <Input
-                              value={form.phone}
-                              onChange={(e) =>
-                                setForm({ ...form, phone: e.target.value })
-                              }
-                            />
-                          </Field.Root>
-
-                          <Field.Root>
-                            <Field.Label>Endereço</Field.Label>
-                            <Input
-                              value={form.address}
-                              onChange={(e) =>
-                                setForm({ ...form, address: e.target.value })
-                              }
-                            />
-                          </Field.Root>
-
-                          <Field.Root>
-                            <Field.Label>Aniversário</Field.Label>
-                            <Input
-                              type="date"
-                              value={form.birthday}
-                              onChange={(e) =>
-                                setForm({ ...form, birthday: e.target.value })
-                              }
-                            />
-                          </Field.Root>
-                        </VStack>
-                      </Dialog.Body>
-
-                      <Dialog.Footer>
-                        <Dialog.ActionTrigger asChild>
-                          <Button variant="ghost">Cancelar</Button>
-                        </Dialog.ActionTrigger>
-                        <Dialog.ActionTrigger asChild>
-                          <Button bg={blue} color={white} onClick={onSave}>
-                            Guardar
-                          </Button>
-                        </Dialog.ActionTrigger>
-                      </Dialog.Footer>
-                    </Dialog.Content>
-                  </Dialog.Positioner>
-                </Portal>
-              </Dialog.Root>
-            </HStack>
-
-            <Separator my="4" borderColor="gray.100" />
-
-            <HStack gap="2" justify="space-between">
-              <InfoItem
-                icon={LuMail}
-                label="Email"
-                value={user?.email ?? "-"}
-              />
-              <Separator
-                orientation="vertical"
-                h="60px"
-                borderColor="gray.100"
-              />
-              <InfoItem
-                icon={LuPhone}
-                label="Telefone"
-                value={user?.phone ?? "-"}
-              />
-              <Separator
-                orientation="vertical"
-                h="60px"
-                borderColor="gray.100"
-              />
-              <InfoItem
-                icon={LuMapPin}
-                label="Endereço"
-                value={user?.address ?? "-"}
-              />
-              <Separator
-                orientation="vertical"
-                h="60px"
-                borderColor="gray.100"
-              />
-              <InfoItem
-                icon={LuCake}
-                label="Aniversário"
-                value={user?.birthday ?? "-"}
-              />
-            </HStack>
+              {/* Info items */}
+              <HStack gap="2" justify="space-between">
+                <InfoItem
+                  icon={LuMail}
+                  label="Email"
+                  value={user?.email ?? "-"}
+                />
+                <Separator
+                  orientation="vertical"
+                  h="60px"
+                  borderColor="gray.100"
+                />
+                <InfoItem
+                  icon={LuPhone}
+                  label="Telefone"
+                  value={user?.phone ?? "-"}
+                />
+                <Separator
+                  orientation="vertical"
+                  h="60px"
+                  borderColor="gray.100"
+                />
+                <InfoItem
+                  icon={LuMapPin}
+                  label="Endereço"
+                  value={user?.address ?? "-"}
+                />
+                <Separator
+                  orientation="vertical"
+                  h="60px"
+                  borderColor="gray.100"
+                />
+                <InfoItem
+                  icon={LuCake}
+                  label="Aniversário"
+                  value={user?.birthday ?? "-"}
+                />
+              </HStack>
+            </Box>
           </Box>
+
+          {/* Stats */}
+          <HStack gap="4" mt="6" align="stretch">
+            {[
+              { icon: LuClock, value: "24", label: "Serviços Contratados" },
+              { icon: LuHeart, value: "8", label: "Profissionais Favoritos" },
+              { icon: LuStar, value: "4.8", label: "Avaliação Média Dada" },
+            ].map((s) => {
+              const Icon = s.icon;
+              return (
+                <Box
+                  key={s.label}
+                  flex="1"
+                  rounded="2xl"
+                  border="1px solid"
+                  borderColor="gray.100"
+                  bg={white}
+                  p="5"
+                  shadow="sm"
+                  transition="all 0.2s ease"
+                  _hover={{
+                    shadow: "md",
+                    borderColor: blue,
+                    cursor: "pointer",
+                    transform: "translateY(-2px)",
+                  }}
+                >
+                  <VStack align="flex-start" gap="3">
+                    <Flex
+                      w="40px"
+                      h="40px"
+                      rounded="full"
+                      bg={`${blue}15`}
+                      alignItems="center"
+                      justifyContent="center"
+                      color={blue}
+                    >
+                      <Icon />
+                    </Flex>
+                    <VStack align="flex-start" gap="0">
+                      <Text fontSize="2xl" fontWeight="bold" color="gray.800">
+                        {s.value}
+                      </Text>
+                      <Text fontSize="xs" color="gray.400" fontWeight="medium">
+                        {s.label}
+                      </Text>
+                    </VStack>
+                  </VStack>
+                </Box>
+              );
+            })}
+          </HStack>
         </Box>
-
-        {/* Bottom */}
-        <Box
-          h="50%"
-          bg={white}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Box w="70vw" p="6">
-            <HStack gap="4" align="stretch">
-              <Box
-                flex="1"
-                rounded="xl"
-                border="1px solid"
-                borderColor="gray.100"
-                p="5"
-                shadow="sm"
-                transition="all 0.2s ease"
-                _hover={{
-                  shadow: "md",
-                  borderColor: blue,
-                  cursor: "pointer",
-                  transform: "translateY(-2px)",
-                }}
-              >
-                <VStack align="flex-start" gap="3">
-                  <Flex
-                    w="40px"
-                    h="40px"
-                    rounded="full"
-                    bg={`${blue}15`}
-                    alignItems="center"
-                    justifyContent="center"
-                    color={blue}
-                  >
-                    <LuClock />
-                  </Flex>
-                  <VStack align="flex-start" gap="0">
-                    <Text fontSize="2xl" fontWeight="bold" color="gray.800">
-                      24
-                    </Text>
-                    <Text fontSize="xs" color="gray.400" fontWeight="medium">
-                      Serviços Contratados
-                    </Text>
-                  </VStack>
-                </VStack>
-              </Box>
-
-              <Box
-                flex="1"
-                rounded="xl"
-                border="1px solid"
-                borderColor="gray.100"
-                p="5"
-                shadow="sm"
-                transition="all 0.2s ease"
-                _hover={{
-                  shadow: "md",
-                  borderColor: blue,
-                  cursor: "pointer",
-                  transform: "translateY(-2px)",
-                }}
-              >
-                <VStack align="flex-start" gap="3">
-                  <Flex
-                    w="40px"
-                    h="40px"
-                    rounded="full"
-                    bg={`${blue}15`}
-                    alignItems="center"
-                    justifyContent="center"
-                    color={blue}
-                  >
-                    <LuHeart />
-                  </Flex>
-                  <VStack align="flex-start" gap="0">
-                    <Text fontSize="2xl" fontWeight="bold" color="gray.800">
-                      8
-                    </Text>
-                    <Text fontSize="xs" color="gray.400" fontWeight="medium">
-                      Profissionais Favoritos
-                    </Text>
-                  </VStack>
-                </VStack>
-              </Box>
-
-              <Box
-                flex="1"
-                rounded="xl"
-                border="1px solid"
-                borderColor="gray.100"
-                p="5"
-                shadow="sm"
-                transition="all 0.2s ease"
-                _hover={{
-                  shadow: "md",
-                  borderColor: blue,
-                  cursor: "pointer",
-                  transform: "translateY(-2px)",
-                }}
-              >
-                <VStack align="flex-start" gap="3">
-                  <Flex
-                    w="40px"
-                    h="40px"
-                    rounded="full"
-                    bg={`${blue}15`}
-                    alignItems="center"
-                    justifyContent="center"
-                    color={blue}
-                  >
-                    <LuStar />
-                  </Flex>
-                  <VStack align="flex-start" gap="0">
-                    <Text fontSize="2xl" fontWeight="bold" color="gray.800">
-                      4.8
-                    </Text>
-                    <Text fontSize="xs" color="gray.400" fontWeight="medium">
-                      Avaliação Média Dada
-                    </Text>
-                  </VStack>
-                </VStack>
-              </Box>
-            </HStack>
-          </Box>
-        </Box>
-      </Flex>
+      </Box>
     </Box>
   );
 }
