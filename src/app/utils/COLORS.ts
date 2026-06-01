@@ -5,3 +5,4 @@ export const dblue2 = '#115FBF';
 export const white = '#FFFFFF';     
 export const white_bg = '#f4f4f4';
 export const orange = '#F97316';
+export const black = '#000000;'

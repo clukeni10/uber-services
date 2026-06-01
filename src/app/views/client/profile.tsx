@@ -62,7 +62,7 @@ export default function ClientProfile() {
     await handleUpdate(form);
   }
 
-  if (loading)
+  if (loading) 
     return (
       <Flex alignItems="center" justifyContent="center" h="100vh">
         <VStack gap="3">
@@ -80,7 +80,7 @@ export default function ClientProfile() {
 
       <Box flex="1" ml="220px" overflow="auto">
         <Box maxW="1100px" mx="auto" px="8" py="8">
-          {/* Card de perfil */}
+       
           <Box
             bg={white}
             borderRadius="2xl"
@@ -89,7 +89,7 @@ export default function ClientProfile() {
             borderColor="gray.100"
             overflow="hidden"
           >
-            {/* Banner azul */}
+          
             <Box bg={blue} h="100px" position="relative">
               <Box
                 position="absolute"
@@ -100,7 +100,7 @@ export default function ClientProfile() {
               />
             </Box>
 
-            {/* Avatar + info */}
+            
             <Box px="6" pb="6">
               <HStack
                 justify="space-between"
@@ -126,7 +126,7 @@ export default function ClientProfile() {
                   {user?.name?.charAt(0).toUpperCase() ?? "?"}
                 </Flex>
 
-                {/* Botão editar */}
+             
                 <Dialog.Root
                   onOpenChange={(e) => onOpenChange(e.open)}
                   size={{ mdDown: "full", md: "lg" }}
@@ -294,7 +294,7 @@ export default function ClientProfile() {
 
               <Separator my="4" borderColor="gray.100" />
 
-              {/* Info items */}
+             
               <HStack gap="2" justify="space-between">
                 <InfoItem
                   icon={LuMail}
@@ -335,7 +335,7 @@ export default function ClientProfile() {
             </Box>
           </Box>
 
-          {/* Stats */}
+ 
           <HStack gap="4" mt="6" align="stretch">
             {[
               { icon: LuClock, value: "24", label: "Serviços Contratados" },

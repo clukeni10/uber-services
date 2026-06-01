@@ -1,16 +1,10 @@
 import { Box, Grid, Text, Flex, Heading, Button } from "@chakra-ui/react";
 import { blue, orange, white } from "@/app/utils/COLORS";
 import { FiCheckCircle, FiMapPin } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import type { Professional } from "@/app/types/Professional";
 
-interface Professional {
-  initials: string;
-  avatarBg: string;
-  name: string;
-  role: string;
-  city: string;
-  rating: number;
-  reviews: number;
-}
+
 
 const professionals: Professional[] = [
   {
@@ -57,7 +51,7 @@ function StarRating({ rating }: { rating: number }) {
 export default function TopProfessionals() {
   return (
     <Box bg="white" py={20} px={{ base: 6, md: 16 }}>
-      {/* Header row */}
+
       <Flex
         justify="space-between"
         align="flex-start"
@@ -104,11 +98,12 @@ export default function TopProfessionals() {
           flexShrink={0}
           alignSelf="center"
         >
-          Ver todos →
+          <Link to="/workers">
+            Ver todos →
+          </Link>
         </Button>
       </Flex>
 
-      {/* Cards */}
       <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
         {professionals.map(
           ({ initials, avatarBg, name, role, city, rating, reviews }) => (
@@ -126,10 +121,8 @@ export default function TopProfessionals() {
               transition="all 0.2s"
               cursor="pointer"
             >
-              {/* Top row: avatar + name + verified */}
               <Flex justify="space-between" align="flex-start" mb={4}>
                 <Flex align="center" gap={3}>
-                  {/* Avatar */}
                   <Box position="relative">
                     <Flex
                       w="56px"
@@ -144,7 +137,7 @@ export default function TopProfessionals() {
                     >
                       {initials}
                     </Flex>
-                    {/* Online dot */}
+
                     <Box
                       position="absolute"
                       bottom="2px"
@@ -175,7 +168,7 @@ export default function TopProfessionals() {
                   </Box>
                 </Flex>
 
-                {/* Verified badge */}
+
                 <Flex align="center" gap={1} color={blue}>
                   <FiCheckCircle size={14} />
                   <Text fontSize="xs" fontWeight="semibold" color={blue}>
@@ -184,10 +177,10 @@ export default function TopProfessionals() {
                 </Flex>
               </Flex>
 
-              {/* Divider */}
+
               <Box borderTop="1px solid" borderColor="gray.100" my={4} />
 
-              {/* Rating row */}
+
               <Flex align="center" gap={3}>
                 <StarRating rating={rating} />
                 <Text fontWeight="bold" color="gray.800" fontSize="md">

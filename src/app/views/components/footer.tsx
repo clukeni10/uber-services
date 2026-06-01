@@ -1,14 +1,25 @@
 import {
   Box,
   Flex,
-  Heading,
+  Heading, 
   Text,
   List,
   Grid,
   GridItem,
+  Link
 } from "@chakra-ui/react";
 import { dblue, white, lblue } from "@/app/utils/COLORS";
 import { LuMail, LuMapPin, LuPhone, LuSettings } from "react-icons/lu";
+
+
+const navLinks = [
+  { label: "Início", href: "/" },
+  { label: "Serviços", href: "/services" },
+  { label: "Profissionais", href: "/workers" },
+  { label: "Entrar", href: "/login" }
+
+]
+
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -60,7 +71,7 @@ export default function Footer() {
             </Text>
           </GridItem>
 
-    
+
           <GridItem>
             <Heading
               color={white}
@@ -78,20 +89,24 @@ export default function Footer() {
               flexDir="column"
               gap="3"
             >
-              {["Início", "Serviços", "Profissionais", "Como Funciona"].map(
-                (item) => (
-                  <List.Item
-                    key={item}
-                    color="whiteAlpha.700"
-                    fontSize="sm"
-                    cursor="pointer"
-                    transition="color 0.2s"
-                    _hover={{ color: "orange.300" }}
-                  >
-                    {item}
-                  </List.Item>
-                ),
-              )}
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  color={white}
+                  fontSize="sm"
+                  fontWeight={500}
+                  opacity={0.88}
+                  _hover={{
+                    opacity: 1,
+                    textDecoration: "underline",
+                    textUnderlineOffset: "4px",
+                  }}
+                  transition="opacity 0.2s"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </List.Root>
           </GridItem>
 
@@ -152,7 +167,7 @@ export default function Footer() {
             </List.Root>
           </GridItem>
 
-  
+
           <GridItem>
             <Heading
               color={white}

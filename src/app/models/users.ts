@@ -1,3 +1,6 @@
+{/* Ficheiro que faz a chamada a API (Backend) para todas as funções que têm haver com busca, atualização de users */} 
+
+
 const BASE_URL = "http://localhost:3001/api/users";
 
 function getHeaders() {

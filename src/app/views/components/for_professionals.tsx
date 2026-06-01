@@ -7,6 +7,7 @@ import {
   FiHeadphones,
   FiCheckCircle,
 } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 const perks = [
   {
@@ -39,9 +40,9 @@ export default function ForProfessionals() {
         gap={16}
         alignItems="center"
       >
-        {/* Left — copy */}
+
         <GridItem>
-          {/* Badge */}
+
           <Flex
             display="inline-flex"
             align="center"
@@ -87,7 +88,7 @@ export default function ForProfessionals() {
             poucos minutos.
           </Text>
 
-          {/* Perks grid */}
+
           <Grid templateColumns="1fr 1fr" gap={6} mb={10}>
             {perks.map(({ Icon, title, desc }) => (
               <Flex key={title} gap={3} align="flex-start">
@@ -115,7 +116,7 @@ export default function ForProfessionals() {
             ))}
           </Grid>
 
-          {/* CTA */}
+
           <Flex align="center" gap={4} flexWrap="wrap">
             <Button
               bg={orange}
@@ -129,7 +130,10 @@ export default function ForProfessionals() {
               _hover={{ bg: "#e56b0a" }}
               transition="background 0.2s"
             >
-              REGISTE-SE GRATUITAMENTE
+              <Link to="/register">
+                REGISTE-SE GRATUITAMENTE
+              </Link>
+
             </Button>
             <Flex align="center" gap={2} color="green.500">
               <FiCheckCircle size={16} />
@@ -140,9 +144,8 @@ export default function ForProfessionals() {
           </Flex>
         </GridItem>
 
-        {/* Right — dashboard card mockup */}
         <GridItem position="relative">
-          {/* Main dashboard card */}
+
           <Box
             border="1px solid"
             borderColor="gray.200"
@@ -151,7 +154,7 @@ export default function ForProfessionals() {
             bg="white"
             shadow="xl"
           >
-            {/* Profile header */}
+
             <Flex
               align="center"
               justify="space-between"
@@ -190,9 +193,9 @@ export default function ForProfessionals() {
               </Flex>
             </Flex>
 
-            {/* Stats */}
+
             <Box>
-              {/* Solicitações */}
+
               <Flex
                 justify="space-between"
                 align="center"
@@ -222,7 +225,7 @@ export default function ForProfessionals() {
                 </Box>
               </Flex>
 
-              {/* Receita */}
+
               <Flex
                 justify="space-between"
                 align="center"
@@ -252,7 +255,7 @@ export default function ForProfessionals() {
                 </Box>
               </Flex>
 
-              {/* Avaliação */}
+
               <Flex
                 justify="space-between"
                 align="center"
@@ -285,7 +288,7 @@ export default function ForProfessionals() {
                 </Box>
               </Flex>
 
-              {/* Próximo serviço */}
+
               <Box px={6} py={4}>
                 <Text
                   fontSize="xs"

@@ -1,6 +1,28 @@
-import { Box, Grid, GridItem, Heading, Text, Input, Button, Flex } from "@chakra-ui/react";
-import { blue, dblue2, white, orange } from "@/app/utils/COLORS";
-import { FiSearch, FiMapPin, FiShield, FiStar, FiClock, FiThumbsUp } from "react-icons/fi";
+import { useState, useEffect } from "react";
+import { Box, Grid, Heading, Text, Button, Flex, IconButton } from "@chakra-ui/react";
+import { blue, white, orange } from "@/app/utils/COLORS";
+import { FiShield, FiStar, FiClock, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+
+const slides = [
+  {
+    title: "Profissionais de confiança para a sua casa",
+    desc: "De pequenas reparações a grandes remodelações. Encontre especialistas verificados e prontos para resolver o seu problema hoje mesmo.",
+    cta: "Encontrar Profissional",
+    image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=2070&auto=format&fit=crop",
+  },
+  {
+    title: "Limpeza impecável, sem preocupações",
+    desc: "Agende serviços de limpeza com profissionais bem avaliados pela comunidade. Mais tempo livre para si, com a casa a brilhar.",
+    cta: "Agendar Limpeza",
+    image: "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?q=80&w=1974&auto=format&fit=crop",
+  },
+  {
+    title: "Mudanças rápidas e seguras",
+    desc: "Transporte os seus pertences com o máximo cuidado. Peça orçamentos a transportadores qualificados em poucos cliques.",
+    cta: "Pedir Orçamento",
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop",
+  }
+];
 
 const stats = [
   { value: "50k+", label: "Serviços concluídos" },
@@ -27,284 +49,176 @@ const features = [
   },
 ];
 
-const AVATAR_INITIALS = ["CA", "MS", "RC", "JP"];
-
 export default function Hero() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  };
+
   return (
     <Box>
-      {/* ── Hero ─────────────────────────────────────────────────────────────── */}
-      <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} minH="90vh">
-        {/* Left — copy + search */}
-        <GridItem bg={blue} display="flex" alignItems="center">
-          <Box px={{ base: 8, lg: 16 }} py={16} maxW="600px">
-            {/* Badge */}
-            <Flex
-              as="span"
-              display="inline-flex"
-              align="center"
-              gap={2}
-              bg="rgba(255,255,255,0.15)"
-              color={white}
-              borderRadius="full"
-              px={4}
-              py={1.5}
-              fontSize="xs"
-              fontWeight="semibold"
-              letterSpacing="wide"
-              mb={6}
-            >
-              <Box w="8px" h="8px" borderRadius="full" bg={orange} />
-              PLATAFORMA #1 EM SERVIÇOS VERIFICADOS
-            </Flex>
-
-            {/* Headline */}
-            <Heading
-              as="h1"
-              fontSize={{ base: "4xl", lg: "6xl" }}
-              fontWeight="bold"
-              color={white}
-              lineHeight="1.1"
-              mb={6}
-            >
-              Serviços de confiança,{" "}
-              <Box as="span" color={orange}>
-                na hora certa
-              </Box>
-            </Heading>
-
-            {/* Sub-copy */}
-            <Text color="whiteAlpha.800" fontSize="lg" mb={10} lineHeight="1.7">
-              Conectamos você a profissionais qualificados, avaliados pela comunidade e prontos
-              para resolver. Rápido, seguro e sem complicações.
-            </Text>
-
-            {/* Search bar */}
-            <Flex
-              bg={white}
-              borderRadius="xl"
-              overflow="hidden"
-              p={2}
-              gap={2}
-              flexDir={{ base: "column", sm: "row" }}
-            >
-              <Flex flex={1} align="center" gap={2} px={3}>
-                <Box color="gray.400" display="flex" alignItems="center">
-                  <FiSearch size={18} />
-                </Box>
-                <Input
-                  variant="unstyled"
-                  placeholder="Que serviço você precisa?"
-                  fontSize="sm"
-                  color="gray.700"
-                  _placeholder={{ color: "gray.400" }}
-                />
-              </Flex>
-
-              <Box w="1px" bg="gray.200" display={{ base: "none", sm: "block" }} my={1} />
-
-              <Flex flex={1} align="center" gap={2} px={3}>
-                <Box color="gray.400" display="flex" alignItems="center">
-                  <FiMapPin size={18} />
-                </Box>
-                <Input
-                  variant="unstyled"
-                  placeholder="Sua cidade"
-                  fontSize="sm"
-                  color="gray.700"
-                  _placeholder={{ color: "gray.400" }}
-                />
-              </Flex>
-
-              <Button
-                bg={orange}
-                color={white}
-                fontWeight="bold"
-                fontSize="sm"
-                letterSpacing="wider"
-                px={8}
-                py={6}
-                borderRadius="lg"
-                _hover={{ bg: "#e56b0a" }}
-                flexShrink={0}
-              >
-                BUSCAR
-              </Button>
-            </Flex>
-
-            {/* Social proof row */}
-            <Flex align="center" gap={4} mt={8} flexWrap="wrap">
-              {/* Avatar stack — manual circles */}
-              <Flex>
-                {AVATAR_INITIALS.map((initials, i) => (
-                  <Box
-                    key={initials}
-                    w="34px"
-                    h="34px"
-                    borderRadius="full"
-                    bg="rgba(255,255,255,0.25)"
-                    border="2px solid"
-                    borderColor={blue}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    ml={i === 0 ? 0 : "-10px"}
-                    fontSize="10px"
-                    fontWeight="bold"
-                    color={white}
-                  >
-                    {initials}
-                  </Box>
-                ))}
-                <Box
-                  w="34px"
-                  h="34px"
-                  borderRadius="full"
-                  bg="rgba(255,255,255,0.15)"
-                  border="2px solid"
-                  borderColor={blue}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  ml="-10px"
-                  fontSize="10px"
-                  color={white}
-                >
-                  +10k
-                </Box>
-              </Flex>
-
-              <Box>
-                <Flex gap={0.5} mb={0.5} align="center">
-                  {[...Array(5)].map((_, i) => (
-                    <Box key={i} as="span" color={orange} fontSize="lg" lineHeight="1">
-                      ★
-                    </Box>
-                  ))}
-                  <Text as="span" color={white} fontWeight="bold" ml={1} fontSize="sm">
-                    4.9/5
-                  </Text>
-                </Flex>
-                <Text color="whiteAlpha.700" fontSize="sm">
-                  Avaliados por +50.000 clientes
-                </Text>
-              </Box>
-            </Flex>
-          </Box>
-        </GridItem>
-
-        {/* Right — floating cards around professional image */}
-        <GridItem
-          bg={dblue2}
-          position="relative"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          overflow="hidden"
-          minH="400px"
-        >
-          {/* Rating card — top left */}
-          <Flex
-            position="absolute"
-            top={8}
-            left={8}
-            bg={white}
-            borderRadius="2xl"
-            px={5}
-            py={4}
-            shadow="lg"
-            align="center"
-            gap={3}
-            zIndex={1}
-          >
-            <Flex
-              w="42px"
-              h="42px"
-              bg={orange}
-              borderRadius="xl"
-              align="center"
-              justify="center"
-              color={white}
-              fontSize="xl"
-            >
-              ★
-            </Flex>
-            <Box>
-              <Text fontWeight="bold" fontSize="xl" lineHeight="1">4.9 ★</Text>
-              <Text fontSize="xs" color="gray.500">Média geral</Text>
-            </Box>
-          </Flex>
-
-          {/* Verified badge — bottom right */}
-          <Flex
-            position="absolute"
-            bottom="160px"
-            right={8}
-            bg={white}
-            borderRadius="2xl"
-            px={5}
-            py={3}
-            shadow="lg"
-            align="center"
-            gap={2}
-            zIndex={1}
-          >
-            <Box color={blue} display="flex" alignItems="center">
-              <FiShield size={18} />
-            </Box>
-            <Text fontWeight="semibold" fontSize="sm" color="gray.700">
-              100% Verificado
-            </Text>
-          </Flex>
-
-          {/* Contratações card — bottom left */}
-          <Flex
-            position="absolute"
-            bottom={8}
-            left={8}
-            bg={white}
-            borderRadius="2xl"
-            px={5}
-            py={4}
-            shadow="lg"
-            align="center"
-            gap={3}
-            zIndex={1}
-          >
-            <Flex
-              w="42px"
-              h="42px"
-              bg={orange}
-              borderRadius="xl"
-              align="center"
-              justify="center"
-              color={white}
-            >
-              <FiThumbsUp size={20} />
-            </Flex>
-            <Box>
-              <Text fontWeight="bold" fontSize="lg" lineHeight="1">+2.000 contratações</Text>
-              <Text fontSize="xs" color="gray.500">somente esta semana</Text>
-            </Box>
-          </Flex>
-
-          {/* Professional image placeholder */}
+      <Box position="relative" h={{ base: "85vh", md: "90vh" }} w="100%" overflow="hidden" bg={blue}>
+        {slides.map((slide, index) => (
           <Box
-            w="75%"
-            h="70%"
-            bg="rgba(255,255,255,0.08)"
-            borderRadius="3xl"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Text color="whiteAlpha.400" fontSize="sm">
-              [Imagem do profissional]
-            </Text>
-          </Box>
-        </GridItem>
-      </Grid>
+            key={index}
+            position="absolute"
+            top={0}
+            left={0}
+            w="100%"
+            h="100%"
+            opacity={currentSlide === index ? 1 : 0}
+            transition="opacity 0.8s ease-in-out"
+            bgImage={`url('${slide.image}')`}
+            bgSize="cover"
 
-      {/* ── Stats bar ─────────────────────────────────────────────────────────── */}
+          >
+            {/* Overlay Escuro para destacar o texto */}
+            <Box
+              position="absolute"
+              top={0}
+              left={0}
+              w="100%"
+              h="100%"
+              bgGradient="linear(to-r, blackAlpha.800 0%, blackAlpha.600 50%, transparent 100%)"
+            />
+
+            <Flex
+              position="relative"
+              h="100%"
+              align="center"
+              maxW="7xl"
+              mx="auto"
+              px={{ base: 6, md: 16 }}
+              zIndex={2}
+            >
+              <Box maxW="650px">
+                <Heading
+                  as="h1"
+                  fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}
+                  fontWeight="bold"
+                  color={white}
+                  lineHeight="1.1"
+                  mb={6}
+                  transform={currentSlide === index ? "translateY(0)" : "translateY(20px)"}
+                  transition="all 0.8s ease-out"
+                  transitionDelay="0.2s"
+                  opacity={currentSlide === index ? 1 : 0}
+                >
+                  {slide.title}
+                </Heading>
+
+                <Text
+                  color="whiteAlpha.900"
+                  fontSize={{ base: "lg", md: "xl" }}
+                  mb={10}
+                  lineHeight="1.6"
+                  transform={currentSlide === index ? "translateY(0)" : "translateY(20px)"}
+                  transition="all 0.8s ease-out"
+                  transitionDelay="0.4s"
+                  opacity={currentSlide === index ? 1 : 0}
+                >
+                  {slide.desc}
+                </Text>
+
+                <Button
+                  bg={orange}
+                  color={white}
+                  size="lg"
+                  px={8}
+                  py={7}
+                  fontSize="md"
+                  fontWeight="bold"
+                  textTransform="uppercase"
+                  letterSpacing="wider"
+                  borderRadius="md"
+                  _hover={{ bg: "#e56b0a", transform: "translateY(-2px)", shadow: "lg" }}
+                  transition="all 0.2s"
+                  transform={currentSlide === index ? "translateY(0)" : "translateY(20px)"}
+                  opacity={currentSlide === index ? 1 : 0}
+                >
+                  {slide.cta}
+                </Button>
+              </Box>
+            </Flex>
+          </Box>
+        ))}
+
+        <Flex
+          position="absolute"
+          w="100%"
+          top="50%"
+          transform="translateY(-50%)"
+          justify="space-between"
+          px={{ base: 4, md: 8 }}
+          zIndex={3}
+          pointerEvents="none"
+        >
+          <IconButton
+            aria-label="Slide anterior"
+            onClick={prevSlide}
+            bg="blackAlpha.400"
+            color="white"
+            borderRadius="full"
+            w="50px"
+            h="50px"
+            pointerEvents="auto"
+            _hover={{ bg: orange }}
+            backdropFilter="blur(4px)"
+          >
+            <FiChevronLeft size={28} />
+          </IconButton>
+          <IconButton
+            aria-label="Próximo slide"
+            onClick={nextSlide}
+            bg="blackAlpha.400"
+            color="white"
+            borderRadius="full"
+            w="50px"
+            h="50px"
+            pointerEvents="auto"
+            _hover={{ bg: orange }}
+            backdropFilter="blur(4px)">
+            <FiChevronRight size={28} />
+          </IconButton>
+        </Flex>
+
+        {/* Indicadores - Pontos na base */}
+        <Flex
+          position="absolute"
+          bottom={8}
+          w="100%"
+          justify="center"
+          gap={3}
+          zIndex={3}
+        >
+          {slides.map((_, index) => (
+            <Box
+              key={index}
+              w={currentSlide === index ? "32px" : "10px"}
+              h="10px"
+              bg={currentSlide === index ? orange : "whiteAlpha.500"}
+              borderRadius="full"
+              cursor="pointer"
+              transition="all 0.3s ease"
+              onClick={() => setCurrentSlide(index)}
+            />
+          ))}
+        </Flex>
+      </Box>
+
+
       <Box bg={blue}>
         <Grid templateColumns={{ base: "1fr 1fr", md: "repeat(4, 1fr)" }}>
           {stats.map(({ value, label }, i) => (
@@ -350,7 +264,7 @@ export default function Hero() {
         </Grid>
       </Box>
 
-      {/* ── Section header preview ────────────────────────────────────────────── */}
+
       <Box bg="gray.50" py={20} textAlign="center" px={6}>
         <Text
           fontSize="xs"
@@ -366,7 +280,7 @@ export default function Hero() {
           Serviços para todos os momentos
         </Heading>
         <Text color="gray.500" fontSize="lg" maxW="560px" mx="auto">
-          Das pequenas reparações à grande mudança, temos o profissional certo para você.
+          Das pequenas reparações à grande mudança, temos o profissional certo para si.
         </Text>
       </Box>
     </Box>

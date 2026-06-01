@@ -1,6 +1,6 @@
 import type { InfoItemProps } from "@/app/types/InfoItemProps";
 import { blue } from "@/app/utils/COLORS";
-import {VStack, Flex, Text } from "@chakra-ui/react";
+import { VStack, Flex, Text } from "@chakra-ui/react";
 
 export default function InfoItem({ icon: Icon, label, value }: InfoItemProps) {
   return (

@@ -13,13 +13,18 @@ import {
 import { useState } from "react";
 import { LuSettings, LuMenu, LuX } from "react-icons/lu";
 
-const navLinks = ["Início", "Serviços", "Profissionais"];
+const navLinks = [
+  { label: "Início", href: "/" },
+  { label: "Serviços", href: "/services" },
+  { label: "Profissionais", href: "/workers" }
+]
+
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Box as="header" bg={blue} position="sticky" top={0} zIndex={100} w="100%">
+    <Box as="header" bg={blue} position="sticky" top={0} zIndex={100} w="100%" borderBottom="1px solid" borderColor="rgba(0,0,0,0.2)">
       <Flex
         px={{ base: 4, md: 8 }}
         h="64px"
@@ -54,8 +59,8 @@ export default function Header() {
         <HStack gap={7} display={{ base: "none", md: "flex" }}>
           {navLinks.map((link) => (
             <Link
-              key={link}
-              href="#"
+              key={link.href}
+              href={link.href}
               color={white}
               fontSize="sm"
               fontWeight={500}
@@ -67,7 +72,7 @@ export default function Header() {
               }}
               transition="opacity 0.2s"
             >
-              {link}
+              {link.label}
             </Link>
           ))}
           <Button
@@ -86,7 +91,7 @@ export default function Header() {
           </Button>
         </HStack>
 
-        {/* Hambúrguer mobile */}
+
         <IconButton
           display={{ base: "flex", md: "none" }}
           aria-label="Abrir menu"
@@ -109,18 +114,20 @@ export default function Header() {
         <VStack align="stretch" gap={0} px={4} pb={4}>
           {navLinks.map((link) => (
             <Link
-              key={link}
-              href="#"
+              key={link.href}
+              href={link.href}
               color={white}
-              fontSize="md"
+              fontSize="sm"
               fontWeight={500}
-              py={3}
-              borderBottom="1px solid"
-              borderColor="whiteAlpha.200"
-              _hover={{ paddingLeft: 2 }}
-              transition="padding 0.15s"
+              opacity={0.88}
+              _hover={{
+                opacity: 1,
+                textDecoration: "underline",
+                textUnderlineOffset: "4px",
+              }}
+              transition="opacity 0.2s"
             >
-              {link}
+              {link.label}
             </Link>
           ))}
           <Button

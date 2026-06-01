@@ -9,8 +9,8 @@ import ForProfessionals from "../components/for_professionals";
 
 
 export default function SPA(){
-      return(
-            <Box>
+      return( 
+            <Box> 
                   <Header/>
                   <Hero/>
                   <Services />

@@ -37,7 +37,7 @@ const recentActivity = [
     title: "Pintura quarto",
     prof: "Juliana Pereira",
     time: "02 mai",
-    status: "Concluído",
+    status: "Concluído", 
     color: "#10B981",
   },
   {
@@ -53,11 +53,12 @@ export default function ClientDashboard() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const firstName = user?.name?.split(" ")[0] ?? "Utilizador";
 
+  {/* Feito pela IA, vou mudar isso, está podre */} 
   return (
     <Box display="flex" h="100vh" bg="gray.50">
       <Sidebar />
 
-      {/* Conteúdo principal */}
+      
       <Box flex="1" ml="220px" overflow="auto">
         <Box maxW="1100px" mx="auto" px="8" py="8">
           {/* Top bar */}
@@ -87,7 +88,6 @@ export default function ClientDashboard() {
             </Flex>
           </HStack>
 
-          {/* Stats */}
           <Grid
             templateColumns={{ base: "repeat(2,1fr)", md: "repeat(4,1fr)" }}
             gap="4"
@@ -139,9 +139,8 @@ export default function ClientDashboard() {
             })}
           </Grid>
 
-          {/* Actividade recente + Banner */}
           <Grid templateColumns={{ base: "1fr", lg: "1.6fr 1fr" }} gap="6">
-            {/* Actividade recente */}
+
             <Box
               bg={white}
               borderRadius="2xl"
@@ -218,7 +217,6 @@ export default function ClientDashboard() {
               </VStack>
             </Box>
 
-            {/* Banner CTA */}
             <Box
               bg={blue}
               borderRadius="2xl"
@@ -231,7 +229,7 @@ export default function ClientDashboard() {
               justifyContent="space-between"
               minH="200px"
             >
-              {/* Decorativo */}
+
               <Box
                 position="absolute"
                 top="-30px"

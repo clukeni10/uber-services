@@ -5,22 +5,36 @@ import Register from "../views/auth/register";
 import ClientProfile from "../views/client/profile";
 import ProfessionalProfile from "../views/professional/profile";
 import ClientDashboard from "../views/client/dashboard";
+import ClientProfessionals from "../views/client/professionals";
+import WorkerDashboard from "../views/professional/dashboard";
+import ClientServices from "../views/client/services";
+import WorkerDetail from "../views/client/professionalDetail";
+import Services from "../views/spa/services";
+import Workers from "../views/spa/workers";
 
 export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
+
+        //Rotas Públicas
         <Route path="/" element={<SPA />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/workers" element={<Workers />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-//Rotas Profissional
-    <Route path="professional/profile" element={<ProfessionalProfile/>} />
+        //Rotas Profissional
+        <Route path="worker/profile" element={<ProfessionalProfile />} />
+        <Route path="worker/dashboard" element={<WorkerDashboard />} />
 
 
-//Rotas Cliente
-        <Route path="client/profile" element={<ClientProfile/>} />
-        <Route path="client/dashboard" element={<ClientDashboard/>} />
+        //Rotas Cliente
+        <Route path="client/profile" element={<ClientProfile />} />
+        <Route path="client/dashboard" element={<ClientDashboard />} />
+        <Route path="client/workers" element={<ClientProfessionals/>} />
+        <Route path="client/services" element={<ClientServices/>} />
+        <Route path="/client/workers/:id" element={<WorkerDetail />} />
         <Route path="*" element={<h1>404 - Página não encontrada</h1>} />
       </Routes>
     </BrowserRouter>

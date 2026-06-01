@@ -7,7 +7,7 @@ import {
   Heading,
   Center,
   SegmentGroup,
-  HStack,
+  HStack, 
   Button,
   Field,
   Input,
@@ -30,9 +30,12 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+
   async function onSubmit() {
-    await handleRegister(name, email, password);
+    const role = selectedTab === "worker" ? "worker" : "client";
+    await handleRegister(name, email, password, role);
   }
+
   return (
     <>
       <Header />
@@ -87,113 +90,42 @@ export default function Register() {
             </SegmentGroup.Root>
           </Center>
 
-          {selectedTab === "user" && (
-            <Box
-              bg={white}
-              w="400px"
-              h="auto"
-              shadow="md"
-              border="0.5px solid rgba(0,0,0,0.2)"
-              rounded="md"
-              p="6"
+
+
+          <Box
+            bg={white} w="400px" shadow="md"
+            border="0.5px solid rgba(0,0,0,0.2)" rounded="md" p="6"
+          >
+            <Field.Root required mt="2">
+              <Field.Label>Nome</Field.Label>
+              <Input placeholder="Digite o seu nome" p="2"
+                value={name} onChange={(e) => setName(e.target.value)} />
+            </Field.Root>
+
+            <Field.Root required mt="2">
+              <Field.Label>Email</Field.Label>
+              <Input placeholder="Digite o seu email" p="2"
+                value={email} onChange={(e) => setEmail(e.target.value)} />
+            </Field.Root>
+
+            <Field.Root mt="4">
+              <Field.Label>Senha</Field.Label>
+              <PasswordInput placeholder="********"
+                value={password} onChange={(e) => setPassword(e.target.value)}
+                visible={visible} onVisibleChange={setVisible} p="2" />
+            </Field.Root>
+
+            {error && <Text color="red.500">{error}</Text>}
+
+            <Button
+              bg={blue} color={white} mt="4" w="100%" p="2"
+              _hover={{ bg: dblue2 }} onClick={onSubmit} loading={loading}
             >
-              <Field.Root required mt="2">
-                <Field.Label>Nome</Field.Label>
-                <Input
-                  placeholder="Digite o seu nome"
-                  p="2"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </Field.Root>
+              Registrar
+            </Button>
+          </Box>
 
-              <Field.Root required mt="2">
-                <Field.Label>Email</Field.Label>
-                <Input
-                  placeholder="Digite o seu email"
-                  p="2"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </Field.Root>
 
-              <Field.Root mt="4">
-                <Field.Label>Senha</Field.Label>
-                <PasswordInput
-                  placeholder="********"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  visible={visible}
-                  onVisibleChange={setVisible}
-                  p="2"
-                />
-              </Field.Root>
-
-              {error && <Text color="red.500">{error}</Text>}
-
-              <Button
-                type="submit"
-                bg={blue}
-                color={white}
-                mt="4"
-                w="100%"
-                p="2"
-                _hover={{ bg: dblue2 }}
-                onClick={onSubmit}
-                loading={loading}
-              >
-                Registrar
-              </Button>
-            </Box>
-          )}
-
-          {selectedTab === "worker" && (
-            <Box
-              bg={white}
-              w="400px"
-              h="auto"
-              shadow="md"
-              border="0.5px solid rgba(0,0,0,0.2)"
-              rounded="md"
-              p="6"
-            >
-              <Field.Root required mt="2">
-                <Field.Label>Email</Field.Label>
-                <Input
-                  placeholder="Digite o seu email worker"
-                  p="2"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </Field.Root>
-
-              <Field.Root mt="4">
-                <Field.Label>Senha</Field.Label>
-                <PasswordInput
-                  placeholder="********"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  visible={visible}
-                  onVisibleChange={setVisible}
-                  p="2"
-                />
-              </Field.Root>
-
-              {error && <Text color="red.500">{error}</Text>}
-
-              <Button
-                type="submit"
-                bg={blue}
-                color={white}
-                mt="4"
-                w="100%"
-                p="2"
-                _hover={{ bg: dblue2 }}
-              >
-                Registrar
-              </Button>
-            </Box>
-          )}
         </Flex>
       </Box>
       <Footer />

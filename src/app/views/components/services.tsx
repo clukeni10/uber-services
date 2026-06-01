@@ -1,22 +1,15 @@
-import { Box, Grid, Text, Flex, Heading, Button } from "@chakra-ui/react";
+import { Box, Grid, Flex, Button } from "@chakra-ui/react";
 import { blue, white } from "@/app/utils/COLORS";
 import {
   FiZap,
   FiTool,
-  FiEdit3,
-  FiPackage,
-  FiTruck,
-  FiCamera,
-  FiSmartphone,
 } from "react-icons/fi";
 import { GiVacuumCleaner } from "react-icons/gi";
+import { Link } from "react-router-dom";
+import type { ServiceCard } from "@/app/types/ServiceCard";
+import Card from "./card";
 
 
-interface ServiceCard {
-  Icon: React.ElementType;
-  title: string;
-  desc: string;
-}
 
 const services: ServiceCard[] = [
   {
@@ -34,67 +27,10 @@ const services: ServiceCard[] = [
     title: "Empregadas de Limpeza",
     desc: "Limpeza profunda da sua casa com profissionais de confiança.",
   },
-  {
-    Icon: FiEdit3,
-    title: "Pintores",
-    desc: "Pintura interior e exterior com acabamento profissional.",
-  },
-  {
-    Icon: FiPackage,
-    title: "Montadores",
-    desc: "Montagem de móveis, prateleiras e organização de espaços.",
-  },
-  {
-    Icon: FiTruck,
-    title: "Mudanças",
-    desc: "Transporte e mudanças com equipa qualificada e seguro incluído.",
-  },
-  {
-    Icon: FiCamera,
-    title: "Fotógrafos",
-    desc: "Sessões fotográficas, eventos e cobertura profissional com equipamento de topo.",
-  },
-  {
-    Icon: FiSmartphone,
-    title: "Técnicos de Informática",
-    desc: "Assistência técnica, formatação, redes e manutenção de equipamentos.",
-  },
 ];
 
-function Card({ Icon, title, desc }: ServiceCard) {
-  return (
-    <Box
-      border="1px solid"
-      borderColor="gray.200"
-      borderRadius="2xl"
-      p={8}
-      bg="white"
-      transition="box-shadow 0.2s, border-color 0.2s"
-      _hover={{ borderColor: blue, boxShadow: "0 4px 24px rgba(28,111,210,0.08)" }}
-      cursor="pointer"
-    >
-      {/* Icon */}
-      <Flex
-        w="60px"
-        h="60px"
-        bg="blue.50"
-        borderRadius="xl"
-        align="center"
-        justify="center"
-        mb={6}
-      >
-        <Icon size={26} color={blue} />
-      </Flex>
 
-      <Heading as="h3" fontSize="xl" fontWeight="bold" color="gray.800" mb={3}>
-        {title}
-      </Heading>
-      <Text fontSize="sm" color="gray.500" lineHeight="1.7">
-        {desc}
-      </Text>
-    </Box>
-  );
-}
+
 
 export default function Services() {
   return (
@@ -105,7 +41,7 @@ export default function Services() {
         ))}
       </Grid>
 
-      {/* CTA button */}
+
       <Flex justify="center" mt={12}>
         <Button
           bg="white"
@@ -123,7 +59,9 @@ export default function Services() {
           _hover={{ bg: blue, color: white }}
           transition="all 0.2s"
         >
-          Ver todos os serviços →
+          <Link to="/services">
+            Ver todos os serviços →
+          </Link>
         </Button>
       </Flex>
     </Box>

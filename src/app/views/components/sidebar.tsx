@@ -40,7 +40,7 @@ function getNavLinks() {
         href: isWorker ? "/worker/services" : "/client/services",
         icon: LuBriefcase,
       },
-      { label: "Profissionais", href: "/professionals", icon: LuUser },
+      { label: "Profissionais", href: "/client/workers", icon: LuUser },
     ];
   }
   return [
@@ -84,7 +84,6 @@ export default function Sidebar() {
       flexDir="column"
       overflow="hidden"
     >
-      {/* Logo */}
       <Flex
         h="64px"
         px="4"
@@ -119,7 +118,6 @@ export default function Sidebar() {
         )}
       </Flex>
 
-      {/* Nav links */}
       <VStack align="stretch" gap="1" px="2" pt="4" flex="1">
         {navLinks.map((link) => {
           const Icon = link.icon;
@@ -155,9 +153,7 @@ export default function Sidebar() {
         })}
       </VStack>
 
-      {/* Profile + Logout + collapse */}
       <VStack gap="2" px="2" pb="4" flexShrink={0}>
-        {/* Profile */}
         <HStack
           gap="3"
           px="3"
@@ -189,7 +185,6 @@ export default function Sidebar() {
           )}
         </HStack>
 
-        {/* Logout */}
         <HStack
           gap="3"
           px="3"

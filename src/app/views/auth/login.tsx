@@ -38,6 +38,9 @@ export default function Login() {
     if (data) {
       if (data.user.role === "client") navigate("/client/profile");
       if (data.user.role === "worker") navigate("/worker/dashboard");
+      if (data.user.role === "admin") {
+        navigate("/admin/dashboard");
+      }
     }
   }
 
@@ -98,8 +101,9 @@ export default function Login() {
           {selectedTab === "user" && (
             <Box
               bg={white}
-              w="400px"
-              h="50vh"
+              w={{ base: "95%", md: "400px" }}
+              h="auto"
+              minH="320px"
               shadow="md"
               border="0.5px solid rgba(0,0,0,0.2)"
               rounded="md"
@@ -148,18 +152,19 @@ export default function Login() {
           {selectedTab === "worker" && (
             <Box
               bg={white}
-              w="400px"
+              w={{ base: "95%", md: "400px" }}
               h="auto"
               shadow="md"
               border="0.5px solid rgba(0,0,0,0.2)"
               rounded="md"
               p="6"
+
             >
 
               <Field.Root required mt="2">
                 <Field.Label>Email</Field.Label>
                 <Input placeholder="Digite o seu email worker" p="2" value={email}
-                  onChange={(e) => setEmail(e.target.value)}/>
+                  onChange={(e) => setEmail(e.target.value)} />
               </Field.Root>
 
               <Field.Root mt="4">
@@ -184,6 +189,8 @@ export default function Login() {
                 w="100%"
                 p="2"
                 _hover={{ bg: dblue2 }}
+                onClick={onSubmit}
+                loading={loading}
               >
                 Entrar
               </Button>
