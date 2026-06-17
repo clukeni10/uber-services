@@ -47,11 +47,6 @@ function getNavLinks(): NavLink[] {
     { label: "Faturas",       href: "/client/invoices",      icon: LuFileText  },
   ];
 
-  return [
-    { label: "Início",        href: "/",              icon: LuHouse     },
-    { label: "Serviços",      href: "/services",      icon: LuBriefcase },
-    { label: "Profissionais", href: "/professionals", icon: LuUser      },
-  ];
 }
 
 function getProfileRoute(): string {
