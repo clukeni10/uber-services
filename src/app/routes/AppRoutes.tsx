@@ -9,8 +9,10 @@ import ClientProfessionals from "../views/client/professionals";
 import WorkerDashboard from "../views/professional/dashboard";
 import ClientServices from "../views/client/services";
 import WorkerDetail from "../views/client/professionalDetail";
-import Services from "../views/spa/services";
+import Services from "../views/professional/services";
 import Workers from "../views/spa/workers";
+import ClientInvoices from "@/app/views/client/invoices";
+
 
 export default function AppRoutes() {
   return (
@@ -27,6 +29,7 @@ export default function AppRoutes() {
         //Rotas Profissional
         <Route path="worker/profile" element={<ProfessionalProfile />} />
         <Route path="worker/dashboard" element={<WorkerDashboard />} />
+        <Route path="worker/services" element={<Services />} />
 
 
         //Rotas Cliente
@@ -35,6 +38,7 @@ export default function AppRoutes() {
         <Route path="client/workers" element={<ClientProfessionals/>} />
         <Route path="client/services" element={<ClientServices/>} />
         <Route path="/client/workers/:id" element={<WorkerDetail />} />
+<Route path="/client/invoices" element={<ClientInvoices />} />
         <Route path="*" element={<h1>404 - Página não encontrada</h1>} />
       </Routes>
     </BrowserRouter>

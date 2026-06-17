@@ -15,7 +15,12 @@ import {
   Input,
   Button,
   Spinner,
+  FileUploadHiddenInput,
 } from "@chakra-ui/react";
+import {
+  FileUploadDropzone,
+  FileUploadRoot,
+} from "@/components/ui/file-upload";
 import {
   LuPencil,
   LuMail,
@@ -26,6 +31,7 @@ import {
   LuHeart,
   LuStar,
   LuX,
+  LuUpload,
 } from "react-icons/lu";
 import { useState } from "react";
 import InfoItem from "../components/infoItem";
@@ -62,7 +68,7 @@ export default function ClientProfile() {
     await handleUpdate(form);
   }
 
-  if (loading) 
+  if (loading)
     return (
       <Flex alignItems="center" justifyContent="center" h="100vh">
         <VStack gap="3">
@@ -80,7 +86,6 @@ export default function ClientProfile() {
 
       <Box flex="1" ml="220px" overflow="auto">
         <Box maxW="1100px" mx="auto" px="8" py="8">
-       
           <Box
             bg={white}
             borderRadius="2xl"
@@ -89,7 +94,6 @@ export default function ClientProfile() {
             borderColor="gray.100"
             overflow="hidden"
           >
-          
             <Box bg={blue} h="100px" position="relative">
               <Box
                 position="absolute"
@@ -100,7 +104,6 @@ export default function ClientProfile() {
               />
             </Box>
 
-            
             <Box px="6" pb="6">
               <HStack
                 justify="space-between"
@@ -108,25 +111,48 @@ export default function ClientProfile() {
                 mt="-36px"
                 mb="4"
               >
-                <Flex
-                  bg={blue}
-                  w="72px"
-                  h="72px"
-                  rounded="full"
-                  alignItems="center"
-                  justifyContent="center"
-                  color={white}
-                  fontSize="2xl"
-                  fontWeight="bold"
-                  border="4px solid"
-                  borderColor={white}
-                  shadow="md"
-                  flexShrink={0}
-                >
-                  {user?.name?.charAt(0).toUpperCase() ?? "?"}
-                </Flex>
+                {user?.image ? (
+                  <Box
+                    w="72px"
+                    h="72px"
+                    rounded="full"
+                    overflow="hidden"
+                    border="4px solid"
+                    borderColor={blue}
+                    shadow="md"
+                    flexShrink={0}
+                    position="relative"
+                  >
+                    <img
+                      src={user.image}
+                      alt={user.name}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  </Box>
+                ) : (
+                  <Flex
+                    bg={blue}
+                    w="72px"
+                    h="72px"
+                    rounded="full"
+                    alignItems="center"
+                    justifyContent="center"
+                    color={white}
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    border="4px solid"
+                    borderColor={white}
+                    shadow="md"
+                    flexShrink={0}
+                  >
+                    {user?.name?.charAt(0).toUpperCase() ?? "?"}
+                  </Flex>
+                )}
 
-             
                 <Dialog.Root
                   onOpenChange={(e) => onOpenChange(e.open)}
                   size={{ mdDown: "full", md: "lg" }}
@@ -145,8 +171,8 @@ export default function ClientProfile() {
                   <Portal>
                     <Dialog.Backdrop />
                     <Dialog.Positioner>
-                      <Dialog.Content borderRadius="2xl" p="2">
-                        <Dialog.Header pb="0">
+                      <Dialog.Content borderRadius="2xl" p="4">
+                        <Dialog.Header pb="2" pt="2">
                           <HStack
                             justify="space-between"
                             align="center"
@@ -172,98 +198,215 @@ export default function ClientProfile() {
                             </Dialog.ActionTrigger>
                           </HStack>
                         </Dialog.Header>
-                        <Dialog.Body py="4">
-                          <Box
-                            display="grid"
-                            gridTemplateColumns="1fr 1fr"
-                            gap="3"
-                          >
-                            <Field.Root required>
-                              <Field.Label
+                        <Dialog.Body py="4" px="2">
+                          <Box display="flex" flexDir="column" gap="5">
+                            {/* Foto de perfil */}
+                            <Box w="full">
+                              <Text
                                 fontSize="xs"
                                 color="gray.500"
                                 fontWeight="semibold"
+                                mb="2"
                               >
-                                Nome
-                              </Field.Label>
-                              <Input
-                                size="sm"
-                                borderRadius="lg"
-                                value={form.name}
-                                onChange={(e) =>
-                                  setForm({ ...form, name: e.target.value })
-                                }
-                              />
-                            </Field.Root>
-                            <Field.Root required>
-                              <Field.Label
-                                fontSize="xs"
-                                color="gray.500"
-                                fontWeight="semibold"
+                                Foto de perfil
+                              </Text>
+                              <FileUploadRoot
+                                maxFiles={1}
+                                accept={{ "image/*": [] }}
+                                onFileChange={(e) => {
+                                  const file = e.acceptedFiles[0];
+                                  if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = () =>
+                                      setForm({
+                                        ...form,
+                                        image: reader.result as string,
+                                      });
+                                    reader.readAsDataURL(file);
+                                  }
+                                }}
                               >
-                                Email
-                              </Field.Label>
-                              <Input
-                                size="sm"
-                                borderRadius="lg"
-                                value={form.email}
-                                onChange={(e) =>
-                                  setForm({ ...form, email: e.target.value })
-                                }
-                              />
-                            </Field.Root>
-                            <Field.Root>
-                              <Field.Label
-                                fontSize="xs"
-                                color="gray.500"
-                                fontWeight="semibold"
-                              >
-                                Telefone
-                              </Field.Label>
-                              <Input
-                                size="sm"
-                                borderRadius="lg"
-                                value={form.phone}
-                                onChange={(e) =>
-                                  setForm({ ...form, phone: e.target.value })
-                                }
-                              />
-                            </Field.Root>
-                            <Field.Root>
-                              <Field.Label
-                                fontSize="xs"
-                                color="gray.500"
-                                fontWeight="semibold"
-                              >
-                                Aniversário
-                              </Field.Label>
-                              <Input
-                                size="sm"
-                                borderRadius="lg"
-                                type="date"
-                                value={form.birthday}
-                                onChange={(e) =>
-                                  setForm({ ...form, birthday: e.target.value })
-                                }
-                              />
-                            </Field.Root>
-                            <Field.Root gridColumn="span 2">
-                              <Field.Label
-                                fontSize="xs"
-                                color="gray.500"
-                                fontWeight="semibold"
-                              >
-                                Endereço
-                              </Field.Label>
-                              <Input
-                                size="sm"
-                                borderRadius="lg"
-                                value={form.address}
-                                onChange={(e) =>
-                                  setForm({ ...form, address: e.target.value })
-                                }
-                              />
-                            </Field.Root>
+                                <FileUploadDropzone
+                                  border="2px dashed"
+                                  borderColor="gray.200"
+                                  borderRadius="xl"
+                                  p="4"
+                                  _hover={{
+                                    borderColor: blue,
+                                    bg: `${blue}08`,
+                                  }}
+                                  transition="all 0.2s"
+                                  cursor="pointer"
+                                  label={""}
+                                >
+                                  <VStack gap="2">
+                                    {form.image ? (
+                                      <>
+                                        <Box
+                                          w="56px"
+                                          h="56px"
+                                          borderRadius="full"
+                                          overflow="hidden"
+                                          border="3px solid"
+                                          borderColor={blue}
+                                        >
+                                          <img
+                                            src={form.image}
+                                            alt="avatar"
+                                            style={{
+                                              width: "100%",
+                                              height: "100%",
+                                              objectFit: "cover",
+                                            }}
+                                          />
+                                        </Box>
+                                        <Text fontSize="xs" color="gray.400">
+                                          Clica ou arrasta para alterar
+                                        </Text>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Flex
+                                          w="44px"
+                                          h="44px"
+                                          borderRadius="full"
+                                          bg={`${blue}15`}
+                                          color={blue}
+                                          alignItems="center"
+                                          justifyContent="center"
+                                        >
+                                          <LuUpload size={18} />
+                                        </Flex>
+                                        <VStack gap="0">
+                                          <Text
+                                            fontSize="xs"
+                                            fontWeight="semibold"
+                                            color="gray.600"
+                                          >
+                                            Clica ou arrasta uma imagem
+                                          </Text>
+                                          <Text
+                                            fontSize="10px"
+                                            color="gray.400"
+                                          >
+                                            PNG, JPG até 2MB
+                                          </Text>
+                                        </VStack>
+                                      </>
+                                    )}
+                                  </VStack>
+                                </FileUploadDropzone>
+                                <FileUploadHiddenInput />
+                              </FileUploadRoot>
+                            </Box>
+
+                            <Separator borderColor="gray.100" />
+
+                            {/* Dados pessoais */}
+                            <Box
+                              display="grid"
+                              gridTemplateColumns="1fr 1fr"
+                              gap="4"
+                              w="full"
+                            >
+                              <Field.Root required>
+                                <Field.Label
+                                  fontSize="xs"
+                                  color="gray.500"
+                                  fontWeight="semibold"
+                                  mb="1"
+                                >
+                                  Nome
+                                </Field.Label>
+                                <Input
+                                  size="sm"
+                                  borderRadius="lg"
+                                  value={form.name}
+                                  onChange={(e) =>
+                                    setForm({ ...form, name: e.target.value })
+                                  }
+                                />
+                              </Field.Root>
+                              <Field.Root required>
+                                <Field.Label
+                                  fontSize="xs"
+                                  color="gray.500"
+                                  fontWeight="semibold"
+                                  mb="1"
+                                >
+                                  Email
+                                </Field.Label>
+                                <Input
+                                  size="sm"
+                                  borderRadius="lg"
+                                  value={form.email}
+                                  onChange={(e) =>
+                                    setForm({ ...form, email: e.target.value })
+                                  }
+                                />
+                              </Field.Root>
+                              <Field.Root>
+                                <Field.Label
+                                  fontSize="xs"
+                                  color="gray.500"
+                                  fontWeight="semibold"
+                                  mb="1"
+                                >
+                                  Telefone
+                                </Field.Label>
+                                <Input
+                                  size="sm"
+                                  borderRadius="lg"
+                                  value={form.phone}
+                                  onChange={(e) =>
+                                    setForm({ ...form, phone: e.target.value })
+                                  }
+                                />
+                              </Field.Root>
+                              <Field.Root>
+                                <Field.Label
+                                  fontSize="xs"
+                                  color="gray.500"
+                                  fontWeight="semibold"
+                                  mb="1"
+                                >
+                                  Aniversário
+                                </Field.Label>
+                                <Input
+                                  size="sm"
+                                  borderRadius="lg"
+                                  type="date"
+                                  value={form.birthday}
+                                  onChange={(e) =>
+                                    setForm({
+                                      ...form,
+                                      birthday: e.target.value,
+                                    })
+                                  }
+                                />
+                              </Field.Root>
+                              <Field.Root gridColumn="span 2">
+                                <Field.Label
+                                  fontSize="xs"
+                                  color="gray.500"
+                                  fontWeight="semibold"
+                                  mb="1"
+                                >
+                                  Endereço
+                                </Field.Label>
+                                <Input
+                                  size="sm"
+                                  borderRadius="lg"
+                                  value={form.address}
+                                  onChange={(e) =>
+                                    setForm({
+                                      ...form,
+                                      address: e.target.value,
+                                    })
+                                  }
+                                />
+                              </Field.Root>
+                            </Box>
                           </Box>
                         </Dialog.Body>
                         <Dialog.Footer pt="0">
@@ -294,7 +437,6 @@ export default function ClientProfile() {
 
               <Separator my="4" borderColor="gray.100" />
 
-             
               <HStack gap="2" justify="space-between">
                 <InfoItem
                   icon={LuMail}
@@ -335,7 +477,6 @@ export default function ClientProfile() {
             </Box>
           </Box>
 
- 
           <HStack gap="4" mt="6" align="stretch">
             {[
               { icon: LuClock, value: "24", label: "Serviços Contratados" },

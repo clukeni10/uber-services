@@ -1,6 +1,6 @@
 import { Box, Flex, Grid, Heading, Text, } from "@chakra-ui/react";
 import Header from "../components/header";
-import { blue, white } from "@/app/utils/COLORS";
+import {  bg, highlights } from "@/app/utils/COLORS";
 import type { ServiceCard } from "@/app/types/ServiceCard";
 import { FiZap, FiTool, FiCamera, FiEdit3, FiPackage, FiScissors, FiSmartphone, FiTruck } from "react-icons/fi";
 import { GiVacuumCleaner } from "react-icons/gi";
@@ -64,9 +64,9 @@ export default function Services() {
     return (
         <Box>
             <Header />
-            <Box bg={blue} w="100%" h="30vh" p="8">
+            <Box bg={bg} w="100%" h="30vh" p="8">
                 <Flex flexDir="column" justifyContent="center" gap="4">
-                    <Heading color={white} fontSize="5xl" fontWeight="bolder">Todos os Serviços</Heading>
+                    <Heading color={highlights} fontSize="5xl" fontWeight="bolder">Todos os Serviços</Heading>
                     <Text fontSize="xl">
                         Encontre o profissional ideal para qualquer necessidade do seu dia a dia.
                     </Text>

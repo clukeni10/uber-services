@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Box, Grid, Heading, Text, Button, Flex, IconButton } from "@chakra-ui/react";
-import { blue, white, orange } from "@/app/utils/COLORS";
+import { blue, white, highlights, highlights_hover } from "@/app/utils/COLORS";
 import { FiShield, FiStar, FiClock, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const slides = [
@@ -133,7 +133,7 @@ export default function Hero() {
                 </Text>
 
                 <Button
-                  bg={orange}
+                  bg={highlights}
                   color={white}
                   size="lg"
                   px={8}
@@ -143,7 +143,7 @@ export default function Hero() {
                   textTransform="uppercase"
                   letterSpacing="wider"
                   borderRadius="md"
-                  _hover={{ bg: "#e56b0a", transform: "translateY(-2px)", shadow: "lg" }}
+                  _hover={{ bg: highlights_hover, transform: "translateY(-2px)", shadow: "lg" }}
                   transition="all 0.2s"
                   transform={currentSlide === index ? "translateY(0)" : "translateY(20px)"}
                   opacity={currentSlide === index ? 1 : 0}
@@ -174,7 +174,7 @@ export default function Hero() {
             w="50px"
             h="50px"
             pointerEvents="auto"
-            _hover={{ bg: orange }}
+            _hover={{ bg: highlights }}
             backdropFilter="blur(4px)"
           >
             <FiChevronLeft size={28} />
@@ -188,7 +188,7 @@ export default function Hero() {
             w="50px"
             h="50px"
             pointerEvents="auto"
-            _hover={{ bg: orange }}
+            _hover={{ bg: highlights }}
             backdropFilter="blur(4px)">
             <FiChevronRight size={28} />
           </IconButton>
@@ -208,7 +208,7 @@ export default function Hero() {
               key={index}
               w={currentSlide === index ? "32px" : "10px"}
               h="10px"
-              bg={currentSlide === index ? orange : "whiteAlpha.500"}
+              bg={currentSlide === index ? highlights : "whiteAlpha.500"}
               borderRadius="full"
               cursor="pointer"
               transition="all 0.3s ease"
@@ -270,7 +270,7 @@ export default function Hero() {
           fontSize="xs"
           fontWeight="bold"
           letterSpacing="widest"
-          color={orange}
+          color={highlights}
           mb={4}
           textTransform="uppercase"
         >

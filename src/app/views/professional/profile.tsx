@@ -1,5 +1,5 @@
 import { useWorkerProfile } from "@/app/controllers/useWorkerProfile";
-import { blue, white } from "@/app/utils/COLORS";
+import { bg, blue, white } from "@/app/utils/COLORS";
 import {
   Box, Flex, HStack, Text, VStack, Heading, Separator,
   IconButton, Dialog, Portal, Field, Input, Button, Spinner,
@@ -72,7 +72,7 @@ export default function ProfessionalProfile() {
     <Box display="flex" h="100vh" bg="gray.50">
       <Sidebar />
 
-      <Box flex="1" ml="220px" overflow="auto">
+      <Box flex="1" ml="220px" overflow="auto" bg={bg}>
         <Box maxW="1100px" mx="auto" px="8" py="8">
 
       

@@ -1,5 +1,5 @@
 import { Box, Grid, Flex, Button } from "@chakra-ui/react";
-import { blue, white } from "@/app/utils/COLORS";
+import { blue, white, bg } from "@/app/utils/COLORS";
 import {
   FiZap,
   FiTool,
@@ -34,7 +34,7 @@ const services: ServiceCard[] = [
 
 export default function Services() {
   return (
-    <Box bg="white" py={20} px={{ base: 6, md: 16 }}>
+    <Box bg={bg} py={20} px={{ base: 6, md: 16 }}>
       <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
         {services.map((s) => (
           <Card key={s.title} {...s} />

@@ -1,20 +1,22 @@
 import { useState, useEffect } from "react";
 import { getWorkers } from "@/app/models/workers";
-import type { UseWorkersParams } from "../types/WorkerType";
-
+import type { Worker, UseWorkersParams } from "../types/WorkerType";
 
 export function useWorkers(params: UseWorkersParams) {
-    const [workers, setWorkers] = useState<Worker[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+  const [workers, setWorkers] = useState<Worker[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        setLoading(true);
-        getWorkers(params)
-            .then(setWorkers)
-            .catch((err) => setError(err.message))
-            .finally(() => setLoading(false));
-    }, [params.search, params.category, params.city]);
+  useEffect(() => {
+    let cancelled = false;
 
-    return { workers, loading, error };
+    getWorkers(params)
+      .then((data) => { if (!cancelled) setWorkers(data); })
+      .catch((err) => { if (!cancelled) setError(err.message); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+
+    return () => { cancelled = true; };
+  }, [params.search, params.category, params.city]);
+
+  return { workers, loading, error };
 }

@@ -15,7 +15,7 @@ import {
 import { PasswordInput } from "@/components/ui/password-input";
 import Footer from "../components/footer";
 import Header from "../components/header";
-import { blue, white, dblue2 } from "../../utils/COLORS";
+import { blue, white } from "../../utils/COLORS";
 import { LuUser, LuBriefcase } from "react-icons/lu";
 import { useState } from "react";
 import { useLogin } from "@/app/controllers/useLogin";
@@ -103,7 +103,6 @@ export default function Login() {
               bg={white}
               w={{ base: "95%", md: "400px" }}
               h="auto"
-              minH="320px"
               shadow="md"
               border="0.5px solid rgba(0,0,0,0.2)"
               rounded="md"
@@ -140,7 +139,7 @@ export default function Login() {
                 mt="4"
                 w="100%"
                 p="2"
-                _hover={{ bg: dblue2 }}
+                _hover={{ bg: blue }}
                 onClick={onSubmit}
                 loading={loading}
               >
@@ -188,7 +187,7 @@ export default function Login() {
                 mt="4"
                 w="100%"
                 p="2"
-                _hover={{ bg: dblue2 }}
+                _hover={{ bg: blue }}
                 onClick={onSubmit}
                 loading={loading}
               >

@@ -1,5 +1,5 @@
 import { Box, Grid, GridItem, Text, Flex, Heading, Button } from "@chakra-ui/react";
-import { blue, orange, white } from "@/app/utils/COLORS";
+import { blue, highlights_hover, highlights, white } from "@/app/utils/COLORS";
 import {
   FiTrendingUp,
   FiCreditCard,
@@ -47,8 +47,8 @@ export default function ForProfessionals() {
             display="inline-flex"
             align="center"
             gap={2}
-            bg="orange.50"
-            color={orange}
+            bg="highlights.50"
+            color={highlights}
             borderRadius="full"
             px={4}
             py={1.5}
@@ -75,7 +75,7 @@ export default function ForProfessionals() {
             as="h2"
             fontSize={{ base: "3xl", md: "4xl" }}
             fontWeight="bold"
-            color={orange}
+            color={highlights}
             mb={6}
             lineHeight="1.2"
           >
@@ -119,7 +119,7 @@ export default function ForProfessionals() {
 
           <Flex align="center" gap={4} flexWrap="wrap">
             <Button
-              bg={orange}
+              bg={highlights}
               color={white}
               borderRadius="xl"
               px={8}
@@ -127,7 +127,7 @@ export default function ForProfessionals() {
               fontWeight="bold"
               fontSize="sm"
               letterSpacing="wider"
-              _hover={{ bg: "#e56b0a" }}
+              _hover={{ bg: highlights_hover }}
               transition="background 0.2s"
             >
               <Link to="/register">
@@ -166,7 +166,7 @@ export default function ForProfessionals() {
                 <Flex
                   w="50px"
                   h="50px"
-                  bg={orange}
+                  bg={highlights}
                   borderRadius="xl"
                   align="center"
                   justify="center"
@@ -272,7 +272,7 @@ export default function ForProfessionals() {
                     <Text fontWeight="bold" fontSize="xl" color="gray.800">
                       4.9
                     </Text>
-                    <Text color={orange}>★</Text>
+                    <Text color={highlights}>★</Text>
                   </Flex>
                 </Box>
                 <Box

@@ -1,42 +1,55 @@
 import { useState, useEffect } from "react";
-import { getCategories, getWorkersByCategory } from "@/app/models/categories";
-import { getWorkers } from "@/app/models/workers";
+import { getClientServices, cancelService } from "@/app/models/services";
+import type { Service } from "../types/ServiceType";
 
 export function useClientServices() {
-    const [categories, setCategories] = useState<any[]>([]);
-    const [workers, setWorkers] = useState<any[]>([]);
-    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-    const [loadingCategories, setLoadingCategories] = useState(true);
-    const [loadingWorkers, setLoadingWorkers] = useState(true);
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState<number | null>(null);
 
-    useEffect(() => {
-        getCategories()
-            .then(setCategories)
-            .finally(() => setLoadingCategories(false));
-    }, []);
+  async function fetchServices() {
+    setLoading(true);
+    try {
+      const data = await getClientServices();
+      setServices(data);
+    } finally {
+      setLoading(false);
+    }
+  }
 
- 
-    useEffect(() => {
-        setLoadingWorkers(true);
-        const fetch = selectedCategory
-            ? getWorkersByCategory(selectedCategory)
-            : getWorkers({});
+  useEffect(() => {
+    let cancelled = false;
 
-        fetch
-            .then((data) => {
+    async function load() {
+      setLoading(true);
+      try {
+        const data = await getClientServices();
+        if (!cancelled) setServices(data);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
 
-                const sorted = [...data].sort((a, b) => (b.rating_avg ?? 0) - (a.rating_avg ?? 0));
-                setWorkers(selectedCategory ? sorted : sorted.slice(0, 6));
-            })
-            .finally(() => setLoadingWorkers(false));
-    }, [selectedCategory]);
+    load();
+    return () => { cancelled = true; };
+  }, []);
 
-    return {
-        categories,
-        workers,
-        selectedCategory,
-        setSelectedCategory,
-        loadingCategories,
-        loadingWorkers,
-    };
+  async function handleCancel(id: number) {
+    setActionLoading(id);
+    await cancelService(id);
+    await fetchServices();
+    setActionLoading(null);
+  }
+
+  const pending   = services.filter((s) => s.status === "pending");
+  const active    = services.filter((s) => s.status === "accepted" || s.status === "active");
+  const completed = services.filter((s) => s.status === "completed");
+  const cancelled = services.filter((s) => s.status === "cancelled");
+
+  return {
+    services, loading, actionLoading,
+    pending, active, completed, cancelled,
+    handleCancel,
+    refetch: fetchServices,
+  };
 }

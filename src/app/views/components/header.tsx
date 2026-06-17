@@ -1,5 +1,5 @@
 "use client";
-import { blue, lblue, white, orange } from "@/app/utils/COLORS";
+import { blue, white, highlights, highlights_hover } from "@/app/utils/COLORS";
 import {
   Box,
   Flex,
@@ -38,7 +38,7 @@ export default function Header() {
             w="42px"
             h="42px"
             rounded="md"
-            bg={lblue}
+            bg={highlights}
             display="flex"
             alignItems="center"
             justifyContent="center"
@@ -52,7 +52,7 @@ export default function Header() {
             fontWeight={700}
             letterSpacing="tight"
           >
-            Uber-Services
+            Workê
           </Heading>
         </Flex>
 
@@ -76,14 +76,14 @@ export default function Header() {
             </Link>
           ))}
           <Button
-            bg={orange}
+            bg={highlights}
             color={white}
             fontWeight={700}
             fontSize="sm"
             px={6}
             h="38px"
             borderRadius="full"
-            _hover={{ bg: "#ea6c0a", transform: "translateY(-1px)" }}
+            _hover={{ bg: highlights_hover, transform: "translateY(-1px)" }}
             _active={{ transform: "scale(0.97)" }}
             transition="all 0.2s"
           >
@@ -132,7 +132,7 @@ export default function Header() {
           ))}
           <Button
             mt={4}
-            bg={orange}
+            bg={highlights}
             color={white}
             fontWeight={700}
             borderRadius="full"

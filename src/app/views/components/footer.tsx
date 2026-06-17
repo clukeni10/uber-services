@@ -8,7 +8,7 @@ import {
   GridItem,
   Link
 } from "@chakra-ui/react";
-import { dblue, white, lblue } from "@/app/utils/COLORS";
+import { dblue, white, highlights } from "@/app/utils/COLORS";
 import { LuMail, LuMapPin, LuPhone, LuSettings } from "react-icons/lu";
 
 
@@ -43,7 +43,7 @@ export default function Footer() {
                 w="42px"
                 h="42px"
                 rounded="md"
-                bg={lblue}
+                bg={highlights}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
@@ -57,7 +57,7 @@ export default function Footer() {
                 fontWeight={700}
                 letterSpacing="tight"
               >
-                Uber-Services
+                Workê
               </Heading>
             </Flex>
             <Text
@@ -99,8 +99,8 @@ export default function Footer() {
                   opacity={0.88}
                   _hover={{
                     opacity: 1,
-                    textDecoration: "underline",
-                    textUnderlineOffset: "4px",
+                    textDecoration: "none",
+                    color: highlights,
                   }}
                   transition="opacity 0.2s"
                 >
@@ -127,27 +127,27 @@ export default function Footer() {
                 fontSize="sm"
                 cursor="pointer"
                 transition="color 0.2s"
-                _hover={{ color: "orange.300" }}
+                _hover={{ color: highlights }}
                 gap="2"
                 display="flex"
                 alignItems="center"
               >
-                <List.Indicator asChild color="orange.400">
+                <List.Indicator asChild color={highlights}>
                   <LuMail size={14} />
                 </List.Indicator>
-                contato@uberservices.com
+                contato@worke.co.ao
               </List.Item>
               <List.Item
                 color="whiteAlpha.700"
                 fontSize="sm"
                 cursor="pointer"
                 transition="color 0.2s"
-                _hover={{ color: "orange.300" }}
+                _hover={{ color: highlights }}
                 gap="2"
                 display="flex"
                 alignItems="center"
               >
-                <List.Indicator asChild color="orange.400">
+                <List.Indicator asChild color={highlights}>
                   <LuPhone size={14} />
                 </List.Indicator>
                 +244 999 999 999
@@ -159,7 +159,7 @@ export default function Footer() {
                 display="flex"
                 alignItems="center"
               >
-                <List.Indicator asChild color="orange.400">
+                <List.Indicator asChild color={highlights}>
                   <LuMapPin size={14} />
                 </List.Indicator>
                 Benfica, Luanda, Angola
@@ -205,7 +205,7 @@ export default function Footer() {
           gap="2"
         >
           <Text color="whiteAlpha.500" fontSize="xs">
-            © {currentYear} Uber-Services. Todos os direitos reservados.
+            © {currentYear} Workê. Todos os direitos reservados.
           </Text>
           <Flex gap="4">
             {["Privacidade", "Termos de Uso"].map((link) => (
@@ -215,7 +215,7 @@ export default function Footer() {
                 fontSize="xs"
                 cursor="pointer"
                 transition="color 0.2s"
-                _hover={{ color: "orange.300" }}
+                _hover={{ color: white }}
               >
                 {link}
               </Text>

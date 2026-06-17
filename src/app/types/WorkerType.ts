@@ -13,9 +13,9 @@ export interface Worker {
 }
 
 export interface UseWorkersParams {
-    search?: string;
-    category?: string;
-    city?: string;
+    search: string;
+    category: string;
+    city: string;
 }
 
 export interface WorkerProfile {

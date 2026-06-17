@@ -1,5 +1,5 @@
 import { Box, Grid, Text, Flex, Heading, Button } from "@chakra-ui/react";
-import { blue, orange, white } from "@/app/utils/COLORS";
+import { blue, highlights, white, bg } from "@/app/utils/COLORS";
 import { FiCheckCircle, FiMapPin } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import type { Professional } from "@/app/types/Professional";
@@ -18,7 +18,7 @@ const professionals: Professional[] = [
   },
   {
     initials: "MS",
-    avatarBg: orange,
+    avatarBg: highlights,
     name: "Mariana Silva",
     role: "Profissional de limpeza",
     city: "Talatona, Luanda",
@@ -40,7 +40,7 @@ function StarRating({ rating }: { rating: number }) {
   return (
     <Flex align="center" gap={1}>
       {[1, 2, 3, 4, 5].map((i) => (
-        <Box key={i} as="span" color={orange} fontSize="md" lineHeight="1">
+        <Box key={i} as="span" color={highlights} fontSize="md" lineHeight="1">
           {i <= Math.floor(rating) ? "★" : "☆"}
         </Box>
       ))}
@@ -50,7 +50,7 @@ function StarRating({ rating }: { rating: number }) {
 
 export default function TopProfessionals() {
   return (
-    <Box bg="white" py={20} px={{ base: 6, md: 16 }}>
+    <Box bg={bg} py={20} px={{ base: 6, md: 16 }}>
 
       <Flex
         justify="space-between"
@@ -64,7 +64,7 @@ export default function TopProfessionals() {
             fontSize="xs"
             fontWeight="bold"
             letterSpacing="widest"
-            color={orange}
+            color={highlights}
             mb={3}
             textTransform="uppercase"
           >

@@ -1,5 +1,5 @@
 import { Box, Text, Flex, Heading } from "@chakra-ui/react";
-import { blue, orange, white } from "@/app/utils/COLORS";
+import { blue, highlights, highlights_hover, white } from "@/app/utils/COLORS";
 import { FiCheckCircle, FiZap } from "react-icons/fi";
 
 const trustItems = [
@@ -44,7 +44,7 @@ export default function CTAFinal() {
         mx="auto"
       >
         Encontre o profissional ideal{" "}
-        <Box as="span" color={orange}>
+        <Box as="span" color={highlights}>
           em poucos minutos
         </Box>
       </Heading>
@@ -66,7 +66,7 @@ export default function CTAFinal() {
       <Flex justify="center" gap={4} flexWrap="wrap" mb={8}>
         <Box
           as="button"
-          bg={orange}
+          bg={highlights}
           color={white}
           borderRadius="xl"
           px={10}
@@ -74,7 +74,7 @@ export default function CTAFinal() {
           fontWeight="bold"
           fontSize="sm"
           letterSpacing="wider"
-          _hover={{ bg: "#e56b0a" }}
+          _hover={{ bg: highlights_hover}}
           transition="background 0.2s"
         >
           SOLICITAR ORÇAMENTO AGORA
