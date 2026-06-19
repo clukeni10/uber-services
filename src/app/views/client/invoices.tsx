@@ -9,7 +9,11 @@ import {
 import Sidebar from "../components/sidebar";
 import { blue, white } from "@/app/utils/COLORS";
 import { useClientInvoices } from "@/app/controllers/useClientInvoices";
-import { generateInvoicePDF, type InvoiceData } from "@/app/utils/generateInvoicePDF";
+import { generateInvoicePDF } from "@/app/utils/generateInvoicePDF";
+import { useSidebar } from "@/app/context/SidebarContext";
+import type { InvoiceData } from "@/app/types/InvoiceData";
+import MobileMenuButton from "../components/mobile_menu_button";
+
 
 const methodLabel: Record<string, string> = {
   card:       "Cartão",
@@ -25,12 +29,16 @@ const methodColor: Record<string, { bg: string; color: string }> = {
 
 export default function ClientInvoices() {
   const { invoices, loading } = useClientInvoices();
+  const { sidebarW } = useSidebar();
 
   return (
     <Box display="flex" minH="100vh" bg="gray.50">
       <Sidebar />
+      <MobileMenuButton /> 
 
-      <Box w="100%" ml="220px">
+      <Box w="100%" flex="1"
+  ml={{ base: "0", md: sidebarW }}
+  transition="margin 0.25s ease">
         {/* Hero */}
         <Box bg={blue} w="100%" px={{ base: 4, md: 10 }} py={10} position="relative" overflow="hidden">
           <Box
@@ -116,7 +124,7 @@ function InvoiceCard({ invoice }: { invoice: InvoiceData }) {
             </HStack>
 
             {/* Descrição */}
-            <Text fontSize="xs" color="gray.500" noOfLines={1}>
+            <Text fontSize="xs" color="gray.500" >
               {invoice.description}
             </Text>
 

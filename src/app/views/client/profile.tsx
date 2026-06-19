@@ -36,10 +36,13 @@ import {
 import { useState } from "react";
 import InfoItem from "../components/infoItem";
 import Sidebar from "../components/sidebar";
+import { useSidebar } from "@/app/context/SidebarContext";
+import MobileMenuButton from "../components/mobile_menu_button";
 
 export default function ClientProfile() {
   const { user, loading, handleUpdate } = useUser();
 
+  const { sidebarW } = useSidebar();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -83,8 +86,14 @@ export default function ClientProfile() {
   return (
     <Box display="flex" h="100vh" bg="gray.50">
       <Sidebar />
+      <MobileMenuButton /> 
 
-      <Box flex="1" ml="220px" overflow="auto">
+      <Box
+        flex="1"
+        ml={{ base: "0", md: sidebarW }}
+        transition="margin 0.25s ease"
+        overflow="auto"
+      >
         <Box maxW="1100px" mx="auto" px="8" py="8">
           <Box
             bg={white}

@@ -109,7 +109,7 @@ export default function Header() {
         overflow="hidden"
         maxH={isOpen ? "400px" : "0px"}
         transition="max-height 0.3s ease"
-        bg="#1557b0"
+        bg={blue}
       >
         <VStack align="stretch" gap={0} px={4} pb={4}>
           {navLinks.map((link) => (

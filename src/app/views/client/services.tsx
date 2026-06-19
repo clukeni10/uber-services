@@ -37,6 +37,8 @@ import { useServicesPage } from "@/app/controllers/useServicePage";
 import { useClientServices } from "@/app/controllers/useClientServices";
 import type { Worker } from "@/app/types/WorkerType";
 import type { Service } from "@/app/types/ServiceType";
+import { useSidebar } from "@/app/context/SidebarContext";
+import MobileMenuButton from "../components/mobile_menu_button";
 
 const iconMap: Record<string, React.ElementType> = {
   LuPlug,
@@ -94,11 +96,18 @@ export default function ClientServices() {
   const totalPedidos =
     pending.length + active.length + completed.length + cancelled.length;
 
+  const { sidebarW } = useSidebar();
   return (
     <Box display="flex" minH="100vh" bg="gray.50">
       <Sidebar />
+      <MobileMenuButton /> 
 
-      <Box w="100%" ml="220px">
+      <Box
+        w="100%"
+        flex="1"
+        ml={{ base: "0", md: sidebarW }}
+        transition="margin 0.25s ease"
+      >
         {/* Hero */}
         <Box
           bg={blue}

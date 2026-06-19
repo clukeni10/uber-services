@@ -14,12 +14,17 @@ import { useState } from "react";
 import Sidebar from "../components/sidebar";
 import { blue, white } from "@/app/utils/COLORS";
 import PaymentModal from "../components/payment_modal";
+import { useSidebar } from "@/app/context/SidebarContext";
+import MobileMenuButton from "../components/mobile_menu_button";
+
 
 export default function WorkerDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { worker, loading } = useWorkerById(Number(id));
   const { handleCreate, loading: creating, error } = useCreateService();
+  
+    const { sidebarW } = useSidebar();
 
   const [form, setForm] = useState({
     description: "",
@@ -54,8 +59,11 @@ export default function WorkerDetail() {
   return (
     <Box display="flex" h="100vh" bg="gray.50">
       <Sidebar />
+      <MobileMenuButton /> 
 
-      <Box flex="1" ml="220px" overflow="auto">
+      <Box flex="1"
+  ml={{ base: "0", md: sidebarW }}
+  transition="margin 0.25s ease">
         <Box maxW="800px" mx="auto" px="8" py="8">
 
           {/* Voltar */}

@@ -16,6 +16,9 @@ import { LuSearch } from "react-icons/lu";
 import { useState } from "react";
 import { useWorkers } from "@/app/controllers/useWorkers";
 import WorkerCard from "../components/worker_card";
+import { useSidebar } from "@/app/context/SidebarContext";
+import MobileMenuButton from "../components/mobile_menu_button";
+
 
 {
   /* Devo editar isso para separar componentes, por enquanto fica assim pq está a funcionar mas vai ser modificado */
@@ -25,13 +28,20 @@ export default function ClientProfessionals() {
   const [category, setCategory] = useState("");
   const [city, setCity] = useState("");
 
+  const { sidebarW } = useSidebar();
   const { workers, loading } = useWorkers({ search, category, city });
 
   return (
     <Box display="flex" minH="100vh" bg="gray.50">
       <Sidebar />
+      <MobileMenuButton /> 
 
-      <Box w="100%" ml="220px">
+      <Box
+        w="100%"
+        flex="1"
+        ml={{ base: "0", md: sidebarW }}
+        transition="margin 0.25s ease"
+      >
         <Box
           bg={blue}
           w="100%"
@@ -122,4 +132,3 @@ export default function ClientProfessionals() {
     </Box>
   );
 }
-

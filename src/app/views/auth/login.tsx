@@ -36,7 +36,7 @@ export default function Login() {
   async function onSubmit() {
     const data = await handleLogin(email, password);
     if (data) {
-      if (data.user.role === "client") navigate("/client/profile");
+      if (data.user.role === "client") navigate("/client/dashboard");
       if (data.user.role === "worker") navigate("/worker/dashboard");
       if (data.user.role === "admin") {
         navigate("/admin/dashboard");

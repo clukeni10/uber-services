@@ -17,6 +17,9 @@ import {
   LuTrendingUp,
   LuBell,
 } from "react-icons/lu";
+import { useSidebar } from "@/app/context/SidebarContext";
+import MobileMenuButton from "../components/mobile_menu_button";
+
 
 const stats = [
   { label: "Serviços Contratados", value: "24", icon: LuClock, color: blue },
@@ -37,7 +40,7 @@ const recentActivity = [
     title: "Pintura quarto",
     prof: "Juliana Pereira",
     time: "02 mai",
-    status: "Concluído", 
+    status: "Concluído",
     color: "#10B981",
   },
   {
@@ -53,13 +56,21 @@ export default function ClientDashboard() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const firstName = user?.name?.split(" ")[0] ?? "Utilizador";
 
-  {/* Feito pela IA, vou mudar isso, está podre */} 
+  const { sidebarW } = useSidebar();
+  {
+    /* Feito pela IA, vou mudar isso, está podre */
+  }
   return (
     <Box display="flex" h="100vh" bg="gray.50">
-      <Sidebar />
-
+      <Sidebar /> 
+      <MobileMenuButton /> 
       
-      <Box flex="1" ml="220px" overflow="auto">
+      <Box
+        flex="1"
+        ml={{ base: "0", md: sidebarW }}
+        transition="margin 0.25s ease"
+        overflow="auto"
+      >
         <Box maxW="1100px" mx="auto" px="8" py="8">
           {/* Top bar */}
           <HStack justify="space-between" mb="8">
@@ -140,7 +151,6 @@ export default function ClientDashboard() {
           </Grid>
 
           <Grid templateColumns={{ base: "1fr", lg: "1.6fr 1fr" }} gap="6">
-
             <Box
               bg={white}
               borderRadius="2xl"
@@ -229,7 +239,6 @@ export default function ClientDashboard() {
               justifyContent="space-between"
               minH="200px"
             >
-
               <Box
                 position="absolute"
                 top="-30px"

@@ -25,6 +25,7 @@ import Sidebar from "../components/sidebar";
 import { blue, white } from "@/app/utils/COLORS";
 import { useWorkerServices } from "@/app/controllers/useWorkerServices";
 import type { Service } from "@/app/types/ServiceType";
+import { useSidebar } from "@/app/context/SidebarContext";
 
 const statusConfig = {
   pending: { label: "Pendente", color: "#F59E0B", bg: "#F59E0B15" },
@@ -35,6 +36,8 @@ const statusConfig = {
 };
 
 export default function WorkerServices() {
+  const { sidebarW } = useSidebar();
+  
   const {
     loading,
     actionLoading,
@@ -64,7 +67,12 @@ export default function WorkerServices() {
     <Box display="flex" minH="100vh" bg="gray.50">
       <Sidebar />
 
-      <Box w="100%" ml="220px">
+      <Box
+        w="100%"
+        flex="1"
+        ml={{ base: "0", md: sidebarW }}
+        transition="margin 0.25s ease"
+      >
         {/* Hero */}
         <Box
           bg={blue}
