@@ -22,11 +22,13 @@ import ProfessionalProfile from "../views/worker/profile";
 import WorkerDashboard from "../views/worker/dashboard";
 import WorkerServices from "../views/worker/services";
 
+
 // Admin
 import AdminDashboard from "../views/admin/dashboard";
 import AdminUsers from "../views/admin/users";
 import AdminInvoices from "../views/admin/invoices";
 import AdminProfile from "../views/admin/profile";
+import WorkerInvoices from "../views/worker/invoices";
 
 function ClientLayout() {
   return (
@@ -79,6 +81,7 @@ export default function AppRoutes() {
           <Route path="/worker/profile"   element={<ProfessionalProfile />} />
           <Route path="/worker/dashboard" element={<WorkerDashboard />} />
           <Route path="/worker/services"  element={<WorkerServices />} />
+          <Route path="/worker/invoices" element={<WorkerInvoices />} />
         </Route>
 
         {/* Rotas Admin */}

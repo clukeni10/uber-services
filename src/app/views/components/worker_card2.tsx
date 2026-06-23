@@ -1,3 +1,9 @@
+import { blue, white } from "@/app/utils/COLORS";
+import { Box, HStack, Text, Badge, VStack, Flex } from "@chakra-ui/react";
+import { LuBadgeCheck, LuMapPin, LuStar } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
+import type { Worker } from "@/app/types/WorkerType";
+
 export default function WorkerCard({ worker }: { worker: Worker }) {
   const navigate = useNavigate();
   return (
@@ -8,7 +14,7 @@ export default function WorkerCard({ worker }: { worker: Worker }) {
       borderColor="gray.100"
       p="5"
       shadow="sm"
-      transition="all 0.2s ease"
+      transition="all 0.2s ease" 
       cursor="pointer"
       _hover={{
         transform: "translateY(-3px)",

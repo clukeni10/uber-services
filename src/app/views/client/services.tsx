@@ -32,6 +32,10 @@ import { useClientServices } from "@/app/controllers/useClientServices";
 import type { Service } from "@/app/types/ServiceType";
 import { useSidebar } from "@/app/context/SidebarContext";
 import MobileMenuButton from "../components/mobile_menu_button";
+import PaymentModal from "../components/payment_modal";
+import WorkerCard from "../components/worker_card2";
+import ClientServiceCard from "../components/client_service_card";
+import { useState } from "react";
 
 const iconMap: Record<string, React.ElementType> = {
   LuPlug,
@@ -55,16 +59,7 @@ const categoryColors = [
   { bg: "#EC489915", color: "#EC4899" },
 ];
 
-const statusConfig: Record<
-  string,
-  { label: string; color: string; bg: string }
-> = {
-  pending: { label: "Pendente", color: "#F59E0B", bg: "#F59E0B15" },
-  accepted: { label: "Aceite", color: "#3B82F6", bg: "#3B82F615" },
-  active: { label: "Em curso", color: "#8B5CF6", bg: "#8B5CF615" },
-  completed: { label: "Concluído", color: "#10B981", bg: "#10B98115" },
-  cancelled: { label: "Cancelado", color: "#EF4444", bg: "#EF444415" },
-};
+
 
 export default function ClientServices() {
   const {
@@ -89,6 +84,14 @@ export default function ClientServices() {
   const totalPedidos =
     pending.length + active.length + completed.length + cancelled.length;
 
+  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState<{ id: number; amount: number } | null>(null);
+  const { refetch } = useClientServices();
+
+  function openPaymentModal(id: number, amount: number) {
+  setSelectedService({ id, amount });
+  setPaymentOpen(true);
+}
   const { sidebarW } = useSidebar();
   return (
     <Box display="flex" minH="100vh" bg="gray.50">
@@ -150,7 +153,7 @@ export default function ClientServices() {
                 fontSize="sm"
                 fontWeight="semibold"
               >
-                <HStack gap="2">
+                <HStack gap="2" p="4">
                   <LuBriefcase size={14} />
                   <Text>Explorar</Text>
                 </HStack>
@@ -161,7 +164,7 @@ export default function ClientServices() {
                 fontSize="sm"
                 fontWeight="semibold"
               >
-                <HStack gap="2">
+                <HStack gap="2" p="4">
                   <LuClock size={14} />
                   <Text>Os meus pedidos</Text>
                   {totalPedidos > 0 && (
@@ -420,6 +423,20 @@ export default function ClientServices() {
           </Tabs.Root>
         </Box>
       </Box>
+      
+      {selectedService && (
+        <PaymentModal
+          isOpen={paymentOpen}
+          onClose={() => setPaymentOpen(false)}
+          serviceId={selectedService.id}
+          amount={selectedService.amount}
+          workerName=""
+          onSuccess={() => {
+            setPaymentOpen(false);
+            refetch();
+          }}
+        />
+      )}
     </Box>
   );
 }
@@ -447,6 +464,7 @@ function ServiceSection({
           />
         ))}
       </VStack>
+
     </Box>
   );
 }

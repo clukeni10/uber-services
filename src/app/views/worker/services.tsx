@@ -11,7 +11,7 @@ import {
   Button,
   Tabs,
 } from "@chakra-ui/react";
-import {
+import { 
   LuClock,
   LuCircleCheck,
   LuCircleX,
@@ -26,6 +26,35 @@ import { blue, white } from "@/app/utils/COLORS";
 import { useWorkerServices } from "@/app/controllers/useWorkerServices";
 import type { Service } from "@/app/types/ServiceType";
 import { useSidebar } from "@/app/context/SidebarContext";
+import { useState, useEffect } from "react";
+
+
+function ActiveTimer({ startedAt }: { startedAt: string }) {
+  const [elapsed, setElapsed] = useState("");
+
+  useEffect(() => {
+    function update() {
+      const diff = Date.now() - new Date(startedAt).getTime();
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setElapsed(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`);
+    }
+    update();
+    const interval = setInterval(update, 1000);
+    return () => clearInterval(interval);
+  }, [startedAt]);
+
+  return (
+    <HStack gap="1.5" bg="#8B5CF615" px="3" py="1.5" borderRadius="full">
+      <Box w="6px" h="6px" borderRadius="full" bg="#8B5CF6"
+        css={{ animation: "ping 1s cubic-bezier(0,0,0.2,1) infinite" }} />
+      <Text fontSize="xs" fontWeight="bold" color="#8B5CF6" fontFamily="mono">
+        {elapsed}
+      </Text>
+    </HStack>
+  );
+}
 
 const statusConfig = {
   pending: { label: "Pendente", color: "#F59E0B", bg: "#F59E0B15" },
@@ -143,10 +172,10 @@ export default function WorkerServices() {
               mb="6"
               bg={white}
               borderRadius="xl"
-              p="1"
+              p="2"
               border="1px solid"
               borderColor="gray.100"
-              gap="10px"
+              gap="12px"
             >
               <Tabs.Trigger
                 value="pending"
@@ -154,7 +183,7 @@ export default function WorkerServices() {
                 fontSize="sm"
                 fontWeight="semibold"
               >
-                <HStack gap="2">
+                <HStack gap="2" p="4">
                   <LuClock size={14} />
                   <Text>Pendentes</Text>
                   {pending.length > 0 && (
@@ -175,7 +204,7 @@ export default function WorkerServices() {
                 fontSize="sm"
                 fontWeight="semibold"
               >
-                <HStack gap="2">
+                <HStack gap="2" p="4">
                   <LuBriefcase size={14} />
                   <Text>Ativos</Text>
                   {active.length > 0 && (
@@ -196,7 +225,7 @@ export default function WorkerServices() {
                 fontSize="sm"
                 fontWeight="semibold"
               >
-                <HStack gap="2">
+                <HStack gap="2" p="4">
                   <LuCircleCheck size={14} />
                   <Text>Concluídos</Text>
                 </HStack>
@@ -207,7 +236,7 @@ export default function WorkerServices() {
                 fontSize="sm"
                 fontWeight="semibold"
               >
-                <HStack gap="2">
+                <HStack gap="2" p="4">
                   <LuCircleX size={14} />
                   <Text>Cancelados</Text>
                 </HStack>
@@ -272,7 +301,8 @@ export default function WorkerServices() {
                         Iniciar serviço
                       </Button>
                     )}
-                    {s.status === "active" && (
+                    {s.status === "active" && s.started_at && (
+                      <>
                       <Button
                         w="full"
                         bg="#10B981"
@@ -285,6 +315,9 @@ export default function WorkerServices() {
                       >
                         Concluir serviço
                       </Button>
+                      <ActiveTimer startedAt={s.started_at} />
+                      </>
+                      
                     )}
                   </HStack>
                 )}
@@ -339,7 +372,7 @@ function ServiceList({
   return (
     <VStack gap="4" align="stretch">
       {services.map((s) => (
-        <ServiceCard key={s.id} service={s} renderActions={renderActions} />
+        <ServiceCard  key={s.id} service={s} renderActions={renderActions} />
       ))}
     </VStack>
   );

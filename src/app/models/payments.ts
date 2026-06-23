@@ -11,7 +11,7 @@ function getHeaders() {
 export async function processPayment(
   service_id: number,
   data: {
-    method: "card" | "transfer" | "multicaixa";
+    method: "card" | "transfer" | "multicaixa"; 
     card_last4?: string;
     phone?: string;
   }
@@ -44,6 +44,15 @@ export async function getInvoice(service_id: number) {
 
 export async function getClientInvoices() {
   const res = await fetch(`${BASE_URL}/invoices/client`, {
+    headers: getHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+  return data;
+}
+
+export async function getWorkerInvoices() {
+  const res = await fetch(`${BASE_URL}/invoices/worker`, {
     headers: getHeaders(),
   });
   const data = await res.json();

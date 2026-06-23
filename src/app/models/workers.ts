@@ -17,7 +17,7 @@ export async function getWorkers(params: { search?: string; category?: string; c
 
     const res = await fetch(`${BASE_URL}?${query.toString()}`, {
         headers: getHeaders(),
-    });
+    }); 
 
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
@@ -62,4 +62,13 @@ export async function getWorkerById(id: number) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
     return data;
+}
+
+export async function getWorkerStats() {
+  const res = await fetch("http://localhost:3001/api/workers/stats", {
+    headers: getHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+  return data;
 }

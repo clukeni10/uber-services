@@ -1,10 +1,22 @@
 import type { Service } from "@/app/types/ServiceType";
 import { white, blue } from "@/app/utils/COLORS";
-import { Badge, Box, Flex, HStack, VStack } from "@chakra-ui/react";
+import { Badge, Box, Flex, HStack, VStack, Text } from "@chakra-ui/react";
 import { LuCalendar, LuCreditCard } from "react-icons/lu";
 
+
+const statusConfig: Record<
+  string,
+  { label: string; color: string; bg: string }
+> = {
+  pending: { label: "Pendente", color: "#F59E0B", bg: "#F59E0B15" },
+  accepted: { label: "Aceite", color: "#3B82F6", bg: "#3B82F615" },
+  active: { label: "Em curso", color: "#8B5CF6", bg: "#8B5CF615" },
+  completed: { label: "Concluído", color: "#10B981", bg: "#10B98115" },
+  cancelled: { label: "Cancelado", color: "#EF4444", bg: "#EF444415" },
+};
+
 export default function ClientServiceCard({
-  service: s,
+  service: s, 
   renderActions,
 }: {
   service: Service;
