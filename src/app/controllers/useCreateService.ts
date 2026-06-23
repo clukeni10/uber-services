@@ -9,8 +9,6 @@ export function useCreateService() {
         worker_id: number;
         description: string;
         scheduled_at: string;
-        amount: number;
-        method: "card" | "transfer";
     }) {
         setLoading(true);
         setError(null);

@@ -12,15 +12,15 @@ import NotFound from "../views/404";
 // Cliente
 import ClientProfile from "../views/client/profile";
 import ClientDashboard from "../views/client/dashboard";
-import ClientProfessionals from "../views/client/professionals";
+import ClientWorkers from "../views/client/workers";
 import ClientServices from "../views/client/services";
 import ClientInvoices from "../views/client/invoices";
-import WorkerDetail from "../views/client/professionalDetail";
+import WorkerDetail from "../views/client/workerDetail";
 
 // Worker
-import ProfessionalProfile from "../views/professional/profile";
-import WorkerDashboard from "../views/professional/dashboard";
-import WorkerServices from "../views/professional/services";
+import ProfessionalProfile from "../views/worker/profile";
+import WorkerDashboard from "../views/worker/dashboard";
+import WorkerServices from "../views/worker/services";
 
 // Admin
 import AdminDashboard from "../views/admin/dashboard";
@@ -68,8 +68,8 @@ export default function AppRoutes() {
         <Route element={<ClientLayout />}>
           <Route path="/client/profile"            element={<ClientProfile />} />
           <Route path="/client/dashboard"          element={<ClientDashboard />} />
-          <Route path="/client/professionals"      element={<ClientProfessionals />} />
-          <Route path="/client/professionals/:id"  element={<WorkerDetail />} />
+          <Route path="/client/workers"      element={<ClientWorkers />} />
+          <Route path="/client/workers/:id"  element={<WorkerDetail />} />
           <Route path="/client/services"           element={<ClientServices />} />
           <Route path="/client/invoices"           element={<ClientInvoices />} />
         </Route>

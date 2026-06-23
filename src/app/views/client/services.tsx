@@ -21,21 +21,14 @@ import {
   LuTruck,
   LuScissors,
   LuLeaf,
-  LuStar,
-  LuMapPin,
-  LuBadgeCheck,
   LuX,
-  LuCalendar,
-  LuCreditCard,
   LuBriefcase,
   LuClock,
 } from "react-icons/lu";
-import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/sidebar";
 import { blue, white } from "@/app/utils/COLORS";
 import { useServicesPage } from "@/app/controllers/useServicePage";
 import { useClientServices } from "@/app/controllers/useClientServices";
-import type { Worker } from "@/app/types/WorkerType";
 import type { Service } from "@/app/types/ServiceType";
 import { useSidebar } from "@/app/context/SidebarContext";
 import MobileMenuButton from "../components/mobile_menu_button";
@@ -100,7 +93,7 @@ export default function ClientServices() {
   return (
     <Box display="flex" minH="100vh" bg="gray.50">
       <Sidebar />
-      <MobileMenuButton /> 
+      <MobileMenuButton />
 
       <Box
         w="100%"
@@ -386,7 +379,35 @@ export default function ClientServices() {
 
                   {/* Concluídos */}
                   {completed.length > 0 && (
-                    <ServiceSection title="Concluídos" services={completed} />
+                    <ServiceSection
+                      title="Concluídos"
+                      services={completed}
+                      renderActions={(s) =>
+                        (s as any).payment_status === "pending" ? (
+                          <Button
+                            size="sm"
+                            bg={blue}
+                            color={white}
+                            borderRadius="lg"
+                            onClick={() =>
+                              openPaymentModal(s.id, Number(s.amount))
+                            }
+                          >
+                            Pagar {Number(s.amount ?? 0).toFixed(2)} Kz
+                          </Button>
+                        ) : (
+                          <Badge
+                            bg="#10B98115"
+                            color="#10B981"
+                            borderRadius="full"
+                            px="2"
+                            fontSize="10px"
+                          >
+                            Pago
+                          </Badge>
+                        )
+                      }
+                    />
                   )}
 
                   {/* Cancelados */}
@@ -430,215 +451,6 @@ function ServiceSection({
   );
 }
 
-function ClientServiceCard({
-  service: s,
-  renderActions,
-}: {
-  service: Service;
-  renderActions?: (s: Service) => React.ReactNode;
-}) {
-  const config = statusConfig[s.status];
 
-  return (
-    <Box
-      bg={white}
-      borderRadius="2xl"
-      border="1px solid"
-      borderColor="gray.100"
-      p="5"
-      shadow="sm"
-      transition="all 0.2s"
-      _hover={{ shadow: "md", borderColor: "gray.200" }}
-    >
-      <HStack justify="space-between" align="flex-start" mb="3">
-        <HStack gap="3">
-          {(s as any).worker_image ? (
-            <Box
-              w="44px"
-              h="44px"
-              borderRadius="full"
-              overflow="hidden"
-              flexShrink={0}
-            >
-              <img
-                src={(s as any).worker_image}
-                alt={(s as any).worker_name}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            </Box>
-          ) : (
-            <Flex
-              w="44px"
-              h="44px"
-              borderRadius="full"
-              flexShrink={0}
-              bg={`${blue}15`}
-              color={blue}
-              alignItems="center"
-              justifyContent="center"
-              fontWeight="bold"
-              fontSize="md"
-            >
-              {(s as any).worker_name?.charAt(0).toUpperCase()}
-            </Flex>
-          )}
-          <VStack align="flex-start" gap="0">
-            <Text fontWeight="bold" fontSize="sm" color="gray.800">
-              {(s as any).worker_name}
-            </Text>
-            <Text fontSize="xs" color="gray.400">
-              {(s as any).specialty ?? "—"}
-            </Text>
-          </VStack>
-        </HStack>
 
-        <Badge
-          bg={config.bg}
-          color={config.color}
-          borderRadius="full"
-          px="3"
-          py="1"
-          fontSize="xs"
-        >
-          {config.label}
-        </Badge>
-      </HStack>
 
-      <Box bg="gray.50" borderRadius="xl" px="4" py="3" mb="3">
-        <Text fontSize="sm" color="gray.700">
-          {s.description}
-        </Text>
-      </Box>
-
-      <HStack gap="4" justify="space-between" flexWrap="wrap">
-        <HStack gap="1.5" color="gray.500">
-          <LuCalendar size={13} />
-          <Text fontSize="xs">
-            {s.scheduled_at
-              ? new Date(s.scheduled_at).toLocaleString("pt-PT", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              : "—"}
-          </Text>
-        </HStack>
-        <HStack gap="1.5">
-          <LuCreditCard size={13} color={blue} />
-          <Text fontSize="xs" fontWeight="bold" color={blue}>
-            {s.amount ? `${parseFloat(String(s.amount)).toFixed(2)} Kz` : "—"}
-          </Text>
-        </HStack>
-
-        {renderActions && renderActions(s)}
-      </HStack>
-    </Box>
-  );
-}
-
-function WorkerCard({ worker }: { worker: Worker }) {
-  const navigate = useNavigate();
-  return (
-    <Box
-      bg={white}
-      borderRadius="2xl"
-      border="1px solid"
-      borderColor="gray.100"
-      p="5"
-      shadow="sm"
-      transition="all 0.2s ease"
-      cursor="pointer"
-      _hover={{
-        transform: "translateY(-3px)",
-        shadow: "md",
-        borderColor: blue,
-      }}
-      onClick={() => navigate(`/client/workers/${worker.id}`)}
-    >
-      <HStack gap="3" align="flex-start">
-        {worker.image ? (
-          <Box
-            w="52px"
-            h="52px"
-            borderRadius="full"
-            border="2px solid"
-            borderColor={blue}
-            flexShrink={0}
-            overflow="hidden"
-          >
-            <img
-              src={worker.image}
-              alt={worker.name}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          </Box>
-        ) : (
-          <Flex
-            w="52px"
-            h="52px"
-            borderRadius="full"
-            flexShrink={0}
-            bg={blue}
-            color={white}
-            alignItems="center"
-            justifyContent="center"
-            fontWeight="bold"
-            fontSize="lg"
-          >
-            {worker.name?.charAt(0).toUpperCase()}
-          </Flex>
-        )}
-        <VStack align="flex-start" gap="0.5" flex="1" minW="0">
-          <HStack gap="1">
-            <Text fontWeight="bold" fontSize="sm" color="gray.800">
-              {worker.name}
-            </Text>
-            <LuBadgeCheck size={14} color={blue} />
-          </HStack>
-          <Text fontSize="xs" color="gray.500">
-            {worker.specialty ?? "Sem especialidade"}
-          </Text>
-          <HStack gap="1" color="gray.400">
-            <LuMapPin size={11} />
-            <Text fontSize="xs">{worker.address ?? "Sem localização"}</Text>
-          </HStack>
-        </VStack>
-      </HStack>
-
-      <HStack
-        justify="space-between"
-        mt="4"
-        pt="3"
-        borderTop="1px solid"
-        borderColor="gray.100"
-      >
-        <HStack gap="1">
-          <LuStar size={13} color="#F59E0B" fill="#F59E0B" />
-          <Text fontSize="sm" fontWeight="bold">
-            {worker.rating_avg ? worker.rating_avg.toFixed(1) : "—"}
-          </Text>
-        </HStack>
-        <Text fontSize="sm" fontWeight="bold" color={blue}>
-          {worker.hourly_rate
-            ? `${worker.hourly_rate.toFixed(2)} Kz/h`
-            : "Preço a combinar"}
-        </Text>
-      </HStack>
-
-      <Badge
-        mt="3"
-        w="full"
-        textAlign="center"
-        borderRadius="lg"
-        py="1"
-        bg={worker.is_available ? "#10B98115" : "gray.100"}
-        color={worker.is_available ? "#10B981" : "gray.400"}
-        fontSize="xs"
-      >
-        {worker.is_available ? "Disponível" : "Indisponível"}
-      </Badge>
-    </Box>
-  );
-}

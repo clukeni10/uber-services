@@ -23,7 +23,7 @@ import MobileMenuButton from "../components/mobile_menu_button";
 {
   /* Devo editar isso para separar componentes, por enquanto fica assim pq está a funcionar mas vai ser modificado */
 }
-export default function ClientProfessionals() {
+export default function ClientWorkers() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [city, setCity] = useState("");
