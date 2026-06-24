@@ -5,27 +5,15 @@ import { blue, white } from "@/app/utils/COLORS";
 import {
   Box,
   Flex,
-  HStack,
   Text,
   VStack,
   Heading,
   Separator,
-  IconButton,
-  Dialog,
-  Portal,
-  Field,
-  Input,
-  Button,
   Spinner,
-  FileUploadHiddenInput,
+  Avatar,
   SimpleGrid,
 } from "@chakra-ui/react";
 import {
-  FileUploadDropzone,
-  FileUploadRoot,
-} from "@/components/ui/file-upload";
-import {
-  LuPencil,
   LuMail,
   LuPhone,
   LuMapPin,
@@ -33,8 +21,6 @@ import {
   LuClock,
   LuHeart,
   LuStar,
-  LuX,
-  LuUpload,
 } from "react-icons/lu";
 import { useState } from "react";
 import InfoItem from "../components/infoItem";
@@ -42,12 +28,14 @@ import Sidebar from "../components/sidebar";
 import { useSidebar } from "@/app/context/SidebarContext";
 import MobileMenuButton from "../components/mobile_menu_button";
 import { usePageTitle } from "@/app/hooks/usePageTitle";
+import { EditProfileDialog } from "../components/edit_profile_dialog";
 
 export default function ClientProfile() {
   usePageTitle("Meu Perfil | Workê");
-  
+
   const { user, loading, handleUpdate } = useUser();
   const { sidebarW } = useSidebar();
+  const [isSaving, setIsSaving] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -66,6 +54,7 @@ export default function ClientProfile() {
         email: user.email ?? "",
         phone: user.phone ?? "",
         address: user.address ?? "",
+        // Garante que se a data vier no formato ISO, extrai apenas YYYY-MM-DD para o input[type="date"]
         birthday: user.birthday ? user.birthday.split("T")[0] : "",
         image: user.image ?? "",
         created_at: user.created_at ?? "",
@@ -74,12 +63,19 @@ export default function ClientProfile() {
   }
 
   async function onSave() {
-    await handleUpdate(form);
+    try {
+      setIsSaving(true);
+      await handleUpdate(form);
+    } catch (error) {
+      console.error("Erro ao atualizar o perfil:", error);
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   if (loading)
     return (
-      <Flex alignItems="center" justifyContent="center" h="100vh">
+      <Flex alignItems="center" justifyContent="center" h="100vh" bg="gray.50">
         <VStack gap="3">
           <Spinner color={blue} size="xl" animationDuration="0.8s" />
           <Text color={blue} fontSize="sm" fontWeight="medium">
@@ -100,7 +96,6 @@ export default function ClientProfile() {
         transition="margin 0.25s ease"
         overflow="auto"
       >
-        {/* Ajustado padding responsivo px={{ base: "4", md: "8" }} */}
         <Box maxW="1100px" mx="auto" px={{ base: "4", md: "8" }} py="8">
           {/* Card Principal do Perfil */}
           <Box
@@ -124,327 +119,52 @@ export default function ClientProfile() {
 
             {/* Conteúdo do Perfil */}
             <Box px={{ base: "4", md: "6" }} pb="6">
-              {/* Bloco de Avatar e Ação com alinhamento responsivo */}
+              {/* Bloco de Avatar e Ação */}
               <Flex justify="space-between" align="flex-end" mt="-36px" mb="4">
-                {user?.image ? (
-                  <Box
-                    w="72px"
-                    h="72px"
-                    rounded="full"
-                    overflow="hidden"
-                    border="4px solid"
-                    borderColor={white}
-                    shadow="md"
-                    flexShrink={0}
-                    position="relative"
-                  >
-                    <img
-                      src={user.image}
-                      alt={user.name}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  </Box>
-                ) : (
-                  <Flex
-                    bg={blue}
-                    w="72px"
-                    h="72px"
-                    rounded="full"
-                    alignItems="center"
-                    justifyContent="center"
-                    color={white}
-                    fontSize="2xl"
-                    fontWeight="bold"
-                    border="4px solid"
-                    borderColor={white}
-                    shadow="md"
-                    flexShrink={0}
-                  >
-                    {user?.name?.charAt(0).toUpperCase() ?? "?"}
-                  </Flex>
-                )}
-
-                <Dialog.Root
-                  onOpenChange={(e) => onOpenChange(e.open)}
-                  size={{ mdDown: "full", md: "lg" }}
+                <Box
+                  w="72px"
+                  h="72px"
+                  rounded="full"
+                  border="4px solid"
+                  borderColor={white}
+                  shadow="md"
+                  flexShrink={0}
+                  position="relative"
+                  bg="gray.200"
                 >
-                  <Dialog.Trigger asChild>
-                    <IconButton
-                      aria-label="Editar perfil"
-                      variant="ghost"
-                      size="sm"
-                      color={blue}
-                      _hover={{ bg: `${blue}15` }}
-                    >
-                      <LuPencil />
-                    </IconButton>
-                  </Dialog.Trigger>
-                  <Portal>
-                    <Dialog.Backdrop />
-                    <Dialog.Positioner>
-                      <Dialog.Content
-                        borderRadius={{ base: "none", md: "2xl" }}
-                        p="4"
-                      >
-                        <Dialog.Header pb="2" pt="2">
-                          <HStack
-                            justify="space-between"
-                            align="center"
-                            w="full"
-                          >
-                            <Dialog.Title
-                              fontSize="lg"
-                              fontWeight="bold"
-                              color="gray.800"
-                            >
-                              Editar Perfil
-                            </Dialog.Title>
-                            <Dialog.ActionTrigger asChild>
-                              <IconButton
-                                aria-label="Fechar"
-                                variant="ghost"
-                                size="sm"
-                                color="gray.400"
-                                _hover={{ color: "gray.600", bg: "gray.100" }}
-                              >
-                                <LuX />
-                              </IconButton>
-                            </Dialog.ActionTrigger>
-                          </HStack>
-                        </Dialog.Header>
-                        <Dialog.Body py="4" px="2">
-                          <Box display="flex" flexDir="column" gap="5">
-                            {/* Foto de perfil no Modal */}
-                            <Box w="full">
-                              <Text
-                                fontSize="xs"
-                                color="gray.500"
-                                fontWeight="semibold"
-                                mb="2"
-                              >
-                                Foto de perfil
-                              </Text>
-                              <FileUploadRoot
-                                maxFiles={1}
-                                accept={{ "image/*": [] }}
-                                onFileChange={(e) => {
-                                  const file = e.acceptedFiles[0];
-                                  if (file) {
-                                    const reader = new FileReader();
-                                    reader.onload = () =>
-                                      setForm({
-                                        ...form,
-                                        image: reader.result as string,
-                                      });
-                                    reader.readAsDataURL(file);
-                                  }
-                                }}
-                              >
-                                <FileUploadDropzone
-                                  border="2px dashed"
-                                  borderColor="gray.200"
-                                  borderRadius="xl"
-                                  p="4"
-                                  _hover={{
-                                    borderColor: blue,
-                                    bg: `${blue}08`,
-                                  }}
-                                  transition="all 0.2s"
-                                  cursor="pointer"
-                                  label={""}
-                                >
-                                  <VStack gap="2">
-                                    {form.image ? (
-                                      <>
-                                        <Box
-                                          w="56px"
-                                          h="56px"
-                                          borderRadius="full"
-                                          overflow="hidden"
-                                          border="3px solid"
-                                          borderColor={blue}
-                                        >
-                                          <img
-                                            src={form.image}
-                                            alt="avatar"
-                                            style={{
-                                              width: "100%",
-                                              height: "100%",
-                                              objectFit: "cover",
-                                            }}
-                                          />
-                                        </Box>
-                                        <Text fontSize="xs" color="gray.400">
-                                          Clica ou arrasta para alterar
-                                        </Text>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <Flex
-                                          w="44px"
-                                          h="44px"
-                                          borderRadius="full"
-                                          bg={`${blue}15`}
-                                          color={blue}
-                                          alignItems="center"
-                                          justifyContent="center"
-                                        >
-                                          <LuUpload size={18} />
-                                        </Flex>
-                                        <VStack gap="0">
-                                          <Text
-                                            fontSize="xs"
-                                            fontWeight="semibold"
-                                            color="gray.600"
-                                          >
-                                            Clica ou arrasta uma imagem
-                                          </Text>
-                                          <Text
-                                            fontSize="10px"
-                                            color="gray.400"
-                                          >
-                                            PNG, JPG até 2MB
-                                          </Text>
-                                        </VStack>
-                                      </>
-                                    )}
-                                  </VStack>
-                                </FileUploadDropzone>
-                                <FileUploadHiddenInput />
-                              </FileUploadRoot>
-                            </Box>
+                  <Avatar.Root w="100%" h="100%">
+                    <Avatar.Image
+                      src={
+                        user?.image
+                          ? user.image.startsWith("data:")
+                            ? user.image
+                            : `http://localhost:3001/${user.image}`
+                          : undefined
+                      }
+                      alt={user?.name ?? "Usuário"}
+                      objectFit="cover"
+                    />
+                    <Avatar.Fallback
+                      name={user?.name ?? "?"}
+                      bg="#0E1B2D"
+                      p="5"
+                      color="white"
+                      fontWeight="bold"
+                      fontSize="xl"
+                    />
+                  </Avatar.Root>
+                </Box>
 
-                            <Separator borderColor="gray.100" />
-
-                            {/* Inputs do Modal adaptáveis para Mobile */}
-                            <SimpleGrid
-                              columns={{ base: 1, sm: 2 }}
-                              gap="4"
-                              w="full"
-                            >
-                              <Field.Root required>
-                                <Field.Label
-                                  fontSize="xs"
-                                  color="gray.500"
-                                  fontWeight="semibold"
-                                  mb="1"
-                                >
-                                  Nome
-                                </Field.Label>
-                                <Input
-                                  size="sm"
-                                  borderRadius="lg"
-                                  value={form.name}
-                                  onChange={(e) =>
-                                    setForm({ ...form, name: e.target.value })
-                                  }
-                                />
-                              </Field.Root>
-                              <Field.Root required>
-                                <Field.Label
-                                  fontSize="xs"
-                                  color="gray.500"
-                                  fontWeight="semibold"
-                                  mb="1"
-                                >
-                                  Email
-                                </Field.Label>
-                                <Input
-                                  size="sm"
-                                  borderRadius="lg"
-                                  value={form.email}
-                                  onChange={(e) =>
-                                    setForm({ ...form, email: e.target.value })
-                                  }
-                                />
-                              </Field.Root>
-                              <Field.Root>
-                                <Field.Label
-                                  fontSize="xs"
-                                  color="gray.500"
-                                  fontWeight="semibold"
-                                  mb="1"
-                                >
-                                  Telefone
-                                </Field.Label>
-                                <Input
-                                  size="sm"
-                                  borderRadius="lg"
-                                  value={form.phone}
-                                  onChange={(e) =>
-                                    setForm({ ...form, phone: e.target.value })
-                                  }
-                                />
-                              </Field.Root>
-                              <Field.Root>
-                                <Field.Label
-                                  fontSize="xs"
-                                  color="gray.500"
-                                  fontWeight="semibold"
-                                  mb="1"
-                                >
-                                  Aniversário
-                                </Field.Label>
-                                <Input
-                                  size="sm"
-                                  borderRadius="lg"
-                                  type="date"
-                                  value={form.birthday}
-                                  onChange={(e) =>
-                                    setForm({
-                                      ...form,
-                                      birthday: e.target.value,
-                                    })
-                                  }
-                                />
-                              </Field.Root>
-                              <Field.Root
-                                gridColumn={{ base: "span 1", sm: "span 2" }}
-                              >
-                                <Field.Label
-                                  fontSize="xs"
-                                  color="gray.500"
-                                  fontWeight="semibold"
-                                  mb="1"
-                                >
-                                  Endereço
-                                </Field.Label>
-                                <Input
-                                  size="sm"
-                                  borderRadius="lg"
-                                  value={form.address}
-                                  onChange={(e) =>
-                                    setForm({
-                                      ...form,
-                                      address: e.target.value,
-                                    })
-                                  }
-                                />
-                              </Field.Root>
-                            </SimpleGrid>
-                          </Box>
-                        </Dialog.Body>
-                        <Dialog.Footer pt="0">
-                          <Dialog.ActionTrigger asChild>
-                            <Button
-                              bg={blue}
-                              color={white}
-                              borderRadius="lg"
-                              w="full"
-                              onClick={onSave}
-                            >
-                              Guardar alterações
-                            </Button>
-                          </Dialog.ActionTrigger>
-                        </Dialog.Footer>
-                      </Dialog.Content>
-                    </Dialog.Positioner>
-                  </Portal>
-                </Dialog.Root>
+                <EditProfileDialog
+                  role="client"
+                  form={form}
+                  setForm={setForm}
+                  onOpenChange={onOpenChange}
+                  onSave={onSave}
+                  isSaving={isSaving}
+                  blue={blue}
+                  white={white}
+                />
               </Flex>
 
               <Heading fontSize="lg" fontWeight="bold" color="gray.800">
@@ -459,7 +179,7 @@ export default function ClientProfile() {
 
               <Separator my="4" borderColor="gray.100" />
 
-              {/* 🔥 CORREÇÃO 1: InfoItems transformados em SimpleGrid para quebrar linha em telemóveis sem esmagar */}
+              {/* Grid de Informações Básicas */}
               <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} gap="4" w="full">
                 <InfoItem
                   icon={LuMail}
@@ -479,13 +199,17 @@ export default function ClientProfile() {
                 <InfoItem
                   icon={LuCake}
                   label="Aniversário"
-                  value={user?.birthday ?? "-"}
+                  value={
+                    user?.birthday
+                      ? new Date(user.birthday).toLocaleDateString("pt-PT")
+                      : "-"
+                  }
                 />
               </SimpleGrid>
             </Box>
           </Box>
 
-          {/* 🔥 CORREÇÃO 2: Cards de estatísticas mudados de HStack para SimpleGrid */}
+          {/* Grid de Estatísticas */}
           <SimpleGrid columns={{ base: 1, sm: 3 }} gap="4" mt="6">
             {[
               { icon: LuClock, value: "24", label: "Serviços Contratados" },

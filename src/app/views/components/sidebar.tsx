@@ -29,7 +29,11 @@ import NavItem from "./nav_item";
 function getRole(): string {
   const stored = localStorage.getItem("user");
   if (!stored) return "guest";
-  return JSON.parse(stored).role ?? "guest";
+  try {
+    return JSON.parse(stored).role ?? "guest";
+  } catch {
+    return "guest";
+  }
 }
 
 function getNavLinks(): NavLink[] {
@@ -77,7 +81,6 @@ export default function Sidebar() {
   const navLinks = getNavLinks();
   const profileRoute = getProfileRoute();
 
-  // Verifica se a sidebar está completamente expandida (seja no mobile ou desktop)
   const isExpanded = !collapsed || mobileOpen;
 
   return (
@@ -107,9 +110,7 @@ export default function Sidebar() {
         display="flex"
         flexDir="column"
         overflow="hidden"
-        // Desktop
         w={{ base: "220px", md: sidebarW }}
-        // Mobile — entra/sai pelo lado esquerdo
         transform={{
           base: mobileOpen ? "translateX(0)" : "translateX(-100%)",
           md: "translateX(0)",
@@ -117,7 +118,7 @@ export default function Sidebar() {
       >
         {/* Logo & Brand Section */}
         <Flex
-          h="72px" /* Alinhado com os 72px do Header */
+          h="72px"
           px={collapsed && !mobileOpen ? "0" : "4"}
           align="center"
           justify={collapsed && !mobileOpen ? "center" : "flex-start"}
@@ -126,7 +127,6 @@ export default function Sidebar() {
           borderBottom="1px solid"
           borderColor="whiteAlpha.200"
         >
-          {/* Container do Logo com escala controlada */}
           <Box
             w={collapsed && !mobileOpen ? "44px" : "56px"}
             h={collapsed && !mobileOpen ? "44px" : "56px"}
@@ -148,7 +148,6 @@ export default function Sidebar() {
             />
           </Box>
 
-          {/* Nome da marca condicional com fonte Sedgwick Ave Display */}
           {isExpanded && (
             <Heading
               color={white}
@@ -243,7 +242,7 @@ export default function Sidebar() {
             )}
           </HStack>
 
-          {/* Collapse toggle — só desktop */}
+          {/* Collapse toggle */}
           <Box
             display={{ base: "none", md: "flex" }}
             w="full"

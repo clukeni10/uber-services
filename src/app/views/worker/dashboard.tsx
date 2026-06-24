@@ -27,6 +27,7 @@ import { useSidebar } from "@/app/context/SidebarContext";
 import { useWorkerStats } from "@/app/controllers/useWorkerStats";
 import { useNavigate } from "react-router-dom";
 import { usePageTitle } from "@/app/hooks/usePageTitle";
+import { useWorkerProfile } from "@/app/controllers/useWorkerProfile";
 
 const statusConfig: Record<
   string,
@@ -45,9 +46,10 @@ export default function WorkerDashboard() {
   const { sidebarW } = useSidebar();
   const { stats, loading } = useWorkerStats();
   const navigate = useNavigate();
-
-  const worker = JSON.parse(localStorage.getItem("user") || "{}");
-  const firstName = worker?.name?.split(" ")[0] ?? "Profissional";
+ 
+  const worker1 = JSON.parse(localStorage.getItem("user") || "{}");
+  const { worker} = useWorkerProfile();
+  const firstName = worker1?.name?.split(" ")[0] ?? "Profissional";
 
   if (loading)
     return (
@@ -127,7 +129,9 @@ export default function WorkerDashboard() {
               },
               {
                 label: "Avaliação média",
-                value: Number(stats?.rating?.avg ?? 0).toFixed(1),
+                value: worker?.rating_avg
+                  ? parseFloat(String(worker.rating_avg)).toFixed(1)
+                  : "—",
                 icon: LuStar,
                 color: "#F59E0B",
               },

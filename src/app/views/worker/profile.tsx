@@ -8,41 +8,27 @@ import {
   VStack,
   Heading,
   Separator,
-  IconButton,
-  Dialog,
-  Portal,
-  Field,
-  Input,
-  Button,
   Spinner,
-  Textarea,
-  Switch,
-  Select,
   createListCollection,
-  FileUploadHiddenInput,
+  Avatar,
 } from "@chakra-ui/react";
 import {
-  LuPencil,
   LuMail,
   LuPhone,
   LuMapPin,
   LuCake,
-  LuX,
   LuStar,
   LuWallet,
   LuClock,
   LuBriefcase,
-  LuUpload,
 } from "react-icons/lu";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import InfoItem from "../components/infoItem";
 import Sidebar from "../components/sidebar";
 import { useSidebar } from "@/app/context/SidebarContext";
-import {
-  FileUploadDropzone,
-  FileUploadRoot,
-} from "@/components/ui/file-upload";
 import { usePageTitle } from "@/app/hooks/usePageTitle";
+import { useWorkerStats } from "@/app/controllers/useWorkerStats";
+import { EditProfileDialog } from "../components/edit_profile_dialog";
 
 const specialties = createListCollection({
   items: [
@@ -61,7 +47,9 @@ export default function ProfessionalProfile() {
   usePageTitle("Meu Perfil | Workê");
 
   const { worker, loading, handleUpdate } = useWorkerProfile();
-  const { sidebarW } = useSidebar(); 
+  const { stats } = useWorkerStats();
+  const { sidebarW } = useSidebar();
+   const [isSaving, setIsSaving] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -75,6 +63,40 @@ export default function ProfessionalProfile() {
     hourly_rate: 0,
     is_available: true,
   });
+
+  // Torna a lista de cards 100% dinâmica dependendo do estado real dos hooks
+  const statCards = useMemo(() => {
+    return [
+      {
+        icon: LuStar,
+        value: worker?.rating_avg
+          ? parseFloat(String(worker.rating_avg)).toFixed(1)
+          : "—",
+        label: "Avaliação Média",
+      },
+      {
+        icon: LuWallet,
+        value: worker?.total_earnings 
+          ? `${Number(worker.total_earnings).toLocaleString("pt-AO")} Kz` 
+          : "0 Kz",
+        label: "Ganhos Totais",
+      },
+      {
+        icon: LuClock,
+        value: stats?.services?.completed !== undefined 
+          ? String(stats.services.completed) 
+          : "0",
+        label: "Serviços Feitos",
+      },
+      {
+        icon: LuBriefcase,
+        value: worker?.hourly_rate 
+          ? `${Number(worker.hourly_rate).toLocaleString("pt-AO")} Kz/h` 
+          : "—",
+        label: "Preço por Hora",
+      },
+    ];
+  }, [worker, stats]);
 
   function onOpenChange(open: boolean) {
     if (open && worker) {
@@ -158,15 +180,26 @@ export default function ProfessionalProfile() {
                     flexShrink={0}
                     position="relative"
                   >
-                    <img
-                      src={worker.image}
-                      alt={worker.name}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
+                    <Avatar.Root w="100%" h="100%">
+                      <Avatar.Image
+                        src={
+                          worker.image
+                            ? `http://localhost:3001/${worker.image}`
+                            : undefined
+                        }
+                        alt={worker.name}
+                        objectFit="cover"
+                      />
+
+                      <Avatar.Fallback
+                        name={worker.name}
+                        bg="#0E1B2D"
+                        p="6"
+                        color="white"
+                        fontWeight="bold"
+                        fontSize="xl"
+                      />
+                    </Avatar.Root>
                   </Box>
                 ) : (
                   <Flex
@@ -188,414 +221,17 @@ export default function ProfessionalProfile() {
                   </Flex>
                 )}
 
-                <Dialog.Root
-                  onOpenChange={(e) => onOpenChange(e.open)}
-                  size={{ mdDown: "full", md: "lg" }}
-                >
-                  <Dialog.Trigger asChild>
-                    <IconButton
-                      aria-label="Editar perfil"
-                      variant="ghost"
-                      size="sm"
-                      color={blue}
-                      _hover={{ bg: `${blue}15` }}
-                    >
-                      <LuPencil />
-                    </IconButton>
-                  </Dialog.Trigger>
-                  <Portal>
-                    <Dialog.Backdrop />
-                    <Dialog.Positioner>
-                      <Dialog.Content borderRadius="2xl" p="4">
-                        <Dialog.Header pb="2" pt="2">
-                          <HStack
-                            justify="space-between"
-                            align="center"
-                            w="full"
-                          >
-                            <Dialog.Title
-                              fontSize="lg"
-                              fontWeight="bold"
-                              color="gray.800"
-                            >
-                              Editar Perfil
-                            </Dialog.Title>
-                            <Dialog.ActionTrigger asChild>
-                              <IconButton
-                                aria-label="Fechar"
-                                variant="ghost"
-                                size="sm"
-                                color="gray.400"
-                                _hover={{ color: "gray.600", bg: "gray.100" }}
-                              >
-                                <LuX />
-                              </IconButton>
-                            </Dialog.ActionTrigger>
-                          </HStack>
-                        </Dialog.Header>
-
-                        <Dialog.Body py="4" px="2">
-                          <VStack gap="5">
-                            <Box w="full">
-                              <Text
-                                fontSize="xs"
-                                color="gray.500"
-                                fontWeight="semibold"
-                                mb="2"
-                              >
-                                Foto de perfil
-                              </Text>
-                              <FileUploadRoot
-                                maxFiles={1}
-                                accept={{ "image/*": [] }}
-                                onFileChange={(e) => {
-                                  const file = e.acceptedFiles[0];
-                                  if (file) {
-                                    const reader = new FileReader();
-                                    reader.onload = () =>
-                                      setForm({
-                                        ...form,
-                                        image: reader.result as string,
-                                      });
-                                    reader.readAsDataURL(file);
-                                  }
-                                }}
-                              >
-                                <FileUploadDropzone
-                                  border="2px dashed"
-                                  borderColor="gray.200"
-                                  borderRadius="xl"
-                                  p="4"
-                                  _hover={{
-                                    borderColor: blue,
-                                    bg: `${blue}08`,
-                                  }}
-                                  transition="all 0.2s"
-                                  cursor="pointer"
-                                  label={""}
-                                >
-                                  <VStack gap="2">
-                                    {form.image ? (
-                                      <>
-                                        <Box
-                                          w="56px"
-                                          h="56px"
-                                          borderRadius="full"
-                                          overflow="hidden"
-                                          border="3px solid"
-                                          borderColor={blue}
-                                        >
-                                          <img
-                                            src={form.image}
-                                            alt="avatar"
-                                            style={{
-                                              width: "100%",
-                                              height: "100%",
-                                              objectFit: "cover",
-                                            }}
-                                          />
-                                        </Box>
-                                        <Text fontSize="xs" color="gray.400">
-                                          Clica ou arrasta para alterar
-                                        </Text>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <Flex
-                                          w="44px"
-                                          h="44px"
-                                          borderRadius="full"
-                                          bg={`${blue}15`}
-                                          color={blue}
-                                          alignItems="center"
-                                          justifyContent="center"
-                                        >
-                                          <LuUpload size={18} />
-                                        </Flex>
-                                        <VStack gap="0">
-                                          <Text
-                                            fontSize="xs"
-                                            fontWeight="semibold"
-                                            color="gray.600"
-                                          >
-                                            Clica ou arrasta uma imagem
-                                          </Text>
-                                          <Text
-                                            fontSize="10px"
-                                            color="gray.400"
-                                          >
-                                            PNG, JPG até 2MB
-                                          </Text>
-                                        </VStack>
-                                      </>
-                                    )}
-                                  </VStack>
-                                </FileUploadDropzone>
-                                <FileUploadHiddenInput />
-                              </FileUploadRoot>
-                            </Box>
-
-                            <Separator borderColor="gray.100" />
-
-                            <Box
-                              display="grid"
-                              gridTemplateColumns="1fr 1fr"
-                              gap="4"
-                              w="full"
-                            >
-                              <Field.Root required>
-                                <Field.Label
-                                  fontSize="xs"
-                                  color="gray.500"
-                                  fontWeight="semibold"
-                                  mb="1"
-                                >
-                                  Nome
-                                </Field.Label>
-                                <Input
-                                  size="sm"
-                                  borderRadius="lg"
-                                  value={form.name}
-                                  onChange={(e) =>
-                                    setForm({ ...form, name: e.target.value })
-                                  }
-                                />
-                              </Field.Root>
-                              <Field.Root required>
-                                <Field.Label
-                                  fontSize="xs"
-                                  color="gray.500"
-                                  fontWeight="semibold"
-                                  mb="1"
-                                >
-                                  Email
-                                </Field.Label>
-                                <Input
-                                  size="sm"
-                                  borderRadius="lg"
-                                  value={form.email}
-                                  onChange={(e) =>
-                                    setForm({ ...form, email: e.target.value })
-                                  }
-                                />
-                              </Field.Root>
-                              <Field.Root>
-                                <Field.Label
-                                  fontSize="xs"
-                                  color="gray.500"
-                                  fontWeight="semibold"
-                                  mb="1"
-                                >
-                                  Telefone
-                                </Field.Label>
-                                <Input
-                                  size="sm"
-                                  borderRadius="lg"
-                                  value={form.phone}
-                                  onChange={(e) =>
-                                    setForm({ ...form, phone: e.target.value })
-                                  }
-                                />
-                              </Field.Root>
-                              <Field.Root>
-                                <Field.Label
-                                  fontSize="xs"
-                                  color="gray.500"
-                                  fontWeight="semibold"
-                                  mb="1"
-                                >
-                                  Aniversário
-                                </Field.Label>
-                                <Input
-                                  size="sm"
-                                  borderRadius="lg"
-                                  type="date"
-                                  value={form.birthday}
-                                  onChange={(e) =>
-                                    setForm({
-                                      ...form,
-                                      birthday: e.target.value,
-                                    })
-                                  }
-                                />
-                              </Field.Root>
-                              <Field.Root gridColumn="span 2">
-                                <Field.Label
-                                  fontSize="xs"
-                                  color="gray.500"
-                                  fontWeight="semibold"
-                                  mb="1"
-                                >
-                                  Endereço
-                                </Field.Label>
-                                <Input
-                                  size="sm"
-                                  borderRadius="lg"
-                                  value={form.address}
-                                  onChange={(e) =>
-                                    setForm({
-                                      ...form,
-                                      address: e.target.value,
-                                    })
-                                  }
-                                />
-                              </Field.Root>
-                            </Box>
-
-                            <Separator borderColor="gray.100" />
-
-                            <Box
-                              display="grid"
-                              gridTemplateColumns="1fr 1fr"
-                              gap="4"
-                              w="full"
-                            >
-                              <Field.Root>
-                                <Field.Label
-                                  fontSize="xs"
-                                  color="gray.500"
-                                  fontWeight="semibold"
-                                  mb="1"
-                                >
-                                  Especialidade
-                                </Field.Label>
-                                <Select.Root
-                                  collection={specialties}
-                                  size="sm"
-                                  value={[form.specialty]}
-                                  onValueChange={(e) =>
-                                    setForm({ ...form, specialty: e.value[0] })
-                                  }
-                                >
-                                  <Select.HiddenSelect />
-                                  <Select.Control>
-                                    <Select.Trigger borderRadius="lg">
-                                      <Select.ValueText placeholder="Selecionar" />
-                                    </Select.Trigger>
-                                  </Select.Control>
-                                  <Portal>
-                                    <Select.Positioner>
-                                      <Select.Content>
-                                        {specialties.items.map((item) => (
-                                          <Select.Item
-                                            item={item}
-                                            key={item.value}
-                                          >
-                                            {item.label}
-                                            <Select.ItemIndicator />
-                                          </Select.Item>
-                                        ))}
-                                      </Select.Content>
-                                    </Select.Positioner>
-                                  </Portal>
-                                </Select.Root>
-                              </Field.Root>
-
-                              <Field.Root>
-                                <Field.Label
-                                  fontSize="xs"
-                                  color="gray.500"
-                                  fontWeight="semibold"
-                                  mb="1"
-                                >
-                                  Preço/hora (Kz)
-                                </Field.Label>
-                                <Input
-                                  size="sm"
-                                  borderRadius="lg"
-                                  type="number"
-                                  value={form.hourly_rate}
-                                  onChange={(e) =>
-                                    setForm({
-                                      ...form,
-                                      hourly_rate: parseFloat(e.target.value),
-                                    })
-                                  }
-                                />
-                              </Field.Root>
-
-                              <Field.Root gridColumn="span 2">
-                                <Field.Label
-                                  fontSize="xs"
-                                  color="gray.500"
-                                  fontWeight="semibold"
-                                  mb="1"
-                                >
-                                  Bio
-                                </Field.Label>
-                                <Textarea
-                                  size="sm"
-                                  borderRadius="lg"
-                                  value={form.bio}
-                                  resize="none"
-                                  onChange={(e) =>
-                                    setForm({ ...form, bio: e.target.value })
-                                  }
-                                />
-                              </Field.Root>
-
-                              <Field.Root gridColumn="span 2">
-                                <Box
-                                  bg="gray.50"
-                                  borderRadius="xl"
-                                  px="4"
-                                  py="3"
-                                  border="1px solid"
-                                  borderColor="gray.100"
-                                >
-                                  <HStack justify="space-between">
-                                    <VStack align="flex-start" gap="0">
-                                      <Text
-                                        fontSize="xs"
-                                        color="gray.500"
-                                        fontWeight="semibold"
-                                      >
-                                        Disponível para serviços
-                                      </Text>
-                                      <Text fontSize="10px" color="gray.400">
-                                        Clientes podem ver e contratar o teu
-                                        perfil
-                                      </Text>
-                                    </VStack>
-                                    <Switch.Root
-                                      checked={form.is_available}
-                                      onCheckedChange={(e) =>
-                                        setForm({
-                                          ...form,
-                                          is_available: e.checked,
-                                        })
-                                      }
-                                    >
-                                      <Switch.HiddenInput />
-                                      <Switch.Control>
-                                        <Switch.Thumb />
-                                      </Switch.Control>
-                                    </Switch.Root>
-                                  </HStack>
-                                </Box>
-                              </Field.Root>
-                            </Box>
-                          </VStack>
-                        </Dialog.Body>
-
-                        <Dialog.Footer pt="2" pb="4" px="2">
-                          <Dialog.ActionTrigger asChild>
-                            <Button
-                              bg={blue}
-                              color={white}
-                              borderRadius="xl"
-                              w="full"
-                              size="md"
-                              onClick={onSave}
-                            >
-                              Guardar alterações
-                            </Button>
-                          </Dialog.ActionTrigger>
-                        </Dialog.Footer>
-                      </Dialog.Content>
-                    </Dialog.Positioner>
-                  </Portal>
-                </Dialog.Root>
+                <EditProfileDialog 
+  role="worker"
+  form={form}
+  setForm={setForm}
+  onOpenChange={onOpenChange}
+  onSave={onSave}
+  isSaving={isSaving}
+  specialties={specialties}
+  blue={blue}
+  white={white}
+/>
               </HStack>
 
               <HStack gap="2" align="center">
@@ -665,27 +301,9 @@ export default function ProfessionalProfile() {
             </Box>
           </Box>
 
+          {/* Secção de Cards Totalmente Dinâmica */}
           <HStack gap="4" mt="6" align="stretch">
-            {[
-              {
-                icon: LuStar,
-                value: worker?.rating_avg
-                  ? parseFloat(String(worker.rating_avg)).toFixed(1)
-                  : "—",
-                label: "Avaliação Média",
-              },
-              {
-                icon: LuWallet,
-                value: `${worker?.total_earnings ?? 0} Kz`,
-                label: "Ganhos Totais",
-              },
-              { icon: LuClock, value: "0", label: "Serviços Feitos" },
-              {
-                icon: LuBriefcase,
-                value: worker?.hourly_rate ? `${worker.hourly_rate} Kz/h` : "—",
-                label: "Preço por Hora",
-              },
-            ].map((s) => {
+            {statCards.map((s) => {
               const Icon = s.icon;
               return (
                 <Box

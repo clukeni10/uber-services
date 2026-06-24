@@ -9,3 +9,5 @@ export interface User {
       image: string;
       created_at: string;
 }
+
+export type Role = 'admin' | 'user' | 'manager';

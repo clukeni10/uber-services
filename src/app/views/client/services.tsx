@@ -440,8 +440,8 @@ export default function ClientServices() {
                               openPaymentModal(
                                 s.id,
                                 Number((s as any).amount ?? 0),
-                                (s as any).worker_name ?? "",
                                 (s as any).worker_id ?? 0,
+                                (s as any).worker_name ?? "",
                               )
                             }
                           >
