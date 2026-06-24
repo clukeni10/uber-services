@@ -15,7 +15,7 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import {
-  LuPencil,
+  LuPencil, 
   LuMail,
   LuPhone,
   LuMapPin,
@@ -30,8 +30,10 @@ import { blue, white } from "@/app/utils/COLORS";
 import { useUser } from "@/app/controllers/useUser";
 import { useSidebar } from "@/app/context/SidebarContext";
 import MobileMenuButton from "../components/mobile_menu_button";
+import { usePageTitle } from "@/app/hooks/usePageTitle";
 
 export default function AdminProfile() {
+  usePageTitle("Admin Perfil | Workê");
   const { user, loading, handleUpdate } = useUser();
   const { sidebarW } = useSidebar();
 
@@ -328,7 +330,7 @@ export default function AdminProfile() {
                 </Box>
               </HStack>
               <Text fontSize="xs" color="gray.400" mt="0.5">
-                Membro desde {new Date(user?.created_at).getFullYear()}
+                Membro desde {new Date(user?.created_at ?? Date.now()).getFullYear()}
               </Text>
 
               <Separator my="4" borderColor="gray.100" />

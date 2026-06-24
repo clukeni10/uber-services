@@ -26,7 +26,7 @@ export function useAdmin() {
       const newUser: User = { ...userData, id: result.userId } as User;
       setUsers((prev) => [...prev, newUser]);
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message); 
       throw err;
     }
   }

@@ -1,32 +1,28 @@
 import {
   Box,
   Flex,
-  Heading, 
+  Heading,
   Text,
   List,
   Grid,
   GridItem,
-  Link
+  Link,
 } from "@chakra-ui/react";
 import { dblue, white, highlights } from "@/app/utils/COLORS";
-import { LuMail, LuMapPin, LuPhone, LuSettings } from "react-icons/lu";
-
+import { LuMail, LuMapPin, LuPhone } from "react-icons/lu";
 
 const navLinks = [
   { label: "Início", href: "/" },
   { label: "Serviços", href: "/services" },
   { label: "Profissionais", href: "/workers" },
-  { label: "Entrar", href: "/login" }
-
-]
-
+  { label: "Entrar", href: "/login" },
+];
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
     <Box as="footer" w="100%" bg={dblue}>
-
       <Box px={{ base: "6", md: "10", lg: "16" }} py={{ base: "10", md: "14" }}>
         <Grid
           templateColumns={{
@@ -36,26 +32,40 @@ export default function Footer() {
           }}
           gap={{ base: "10", md: "8" }}
         >
-
           <GridItem colSpan={{ base: 1, sm: 2, lg: 1 }}>
-            <Flex align="center" gap={3} mb={4}>
+            {/* Bloco de Identidade Visual Alinhado com o Header */}
+            <Flex align="center" gap={4} mb={4}>
+              {/* Container do Logo com escala adaptada para o tamanho grande */}
               <Box
-                w="42px"
-                h="42px"
-                rounded="md"
-                bg={highlights}
+                w={{ base: "64px", md: "80px" }}
+                h={{ base: "64px", md: "80px" }}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
                 flexShrink={0}
+                my="-10px"
               >
-                <LuSettings color={white} size={22} />
+                <img
+                  src="/logo.png"
+                  alt="Workê Logo"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                    transform: "scale(1.1)",
+                  }}
+                />
               </Box>
+
+              {/* Nome com a fonte Streetwear/Graffiti */}
               <Heading
                 color={white}
-                fontSize={{ base: "lg", md: "xl" }}
-                fontWeight={700}
-                letterSpacing="tight"
+                fontSize={{ base: "3xl", md: "4xl" }}
+                fontWeight={400}
+                letterSpacing="0.02em"
+                fontFamily="'Sedgwick Ave Display', cursive"
+                lineHeight="1"
+                mt="2px"
               >
                 Workê
               </Heading>
@@ -65,12 +75,14 @@ export default function Footer() {
               fontSize="sm"
               maxW="260px"
               lineHeight="tall"
+              mt={
+                2
+              } /* Pequeno ajuste de espaço superior devido à margem negativa do logo */
             >
               Conectando você a profissionais verificados, com segurança e
               confiança.
             </Text>
           </GridItem>
-
 
           <GridItem>
             <Heading
@@ -109,7 +121,6 @@ export default function Footer() {
               ))}
             </List.Root>
           </GridItem>
-
 
           <GridItem>
             <Heading
@@ -167,7 +178,6 @@ export default function Footer() {
             </List.Root>
           </GridItem>
 
-
           <GridItem>
             <Heading
               color={white}
@@ -190,7 +200,6 @@ export default function Footer() {
           </GridItem>
         </Grid>
       </Box>
-
 
       <Box
         borderTop="1px solid"

@@ -60,7 +60,7 @@ export async function getWorkerById(id: number) {
         headers: getHeaders(),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
+    if (!res.ok) throw new Error(data.error); 
     return data;
 }
 
@@ -71,4 +71,13 @@ export async function getWorkerStats() {
   const data = await res.json();
   if (!res.ok) throw new Error(data.error);
   return data;
+}
+
+export async function getWorkerFilters() {
+    const res = await fetch(`${BASE_URL}/filters`, {
+        headers: getHeaders(),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    return data; 
 }

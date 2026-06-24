@@ -8,7 +8,7 @@ export interface InvoiceData {
   method: string;
   description: string;
   scheduled_at: string;
-  category_name: string;
+  category_name: string; 
   client: { name: string; email: string; phone: string; address: string };
   worker: { name: string; email: string; phone: string; specialty: string };
-}
+} 

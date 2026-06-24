@@ -1,3 +1,5 @@
+"use client";
+
 import { useUser } from "@/app/controllers/useUser";
 import { blue, white } from "@/app/utils/COLORS";
 import {
@@ -16,6 +18,7 @@ import {
   Button,
   Spinner,
   FileUploadHiddenInput,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import {
   FileUploadDropzone,
@@ -38,11 +41,14 @@ import InfoItem from "../components/infoItem";
 import Sidebar from "../components/sidebar";
 import { useSidebar } from "@/app/context/SidebarContext";
 import MobileMenuButton from "../components/mobile_menu_button";
+import { usePageTitle } from "@/app/hooks/usePageTitle";
 
 export default function ClientProfile() {
+  usePageTitle("Meu Perfil | Workê");
+  
   const { user, loading, handleUpdate } = useUser();
-
   const { sidebarW } = useSidebar();
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -86,7 +92,7 @@ export default function ClientProfile() {
   return (
     <Box display="flex" h="100vh" bg="gray.50">
       <Sidebar />
-      <MobileMenuButton /> 
+      <MobileMenuButton />
 
       <Box
         flex="1"
@@ -94,7 +100,9 @@ export default function ClientProfile() {
         transition="margin 0.25s ease"
         overflow="auto"
       >
-        <Box maxW="1100px" mx="auto" px="8" py="8">
+        {/* Ajustado padding responsivo px={{ base: "4", md: "8" }} */}
+        <Box maxW="1100px" mx="auto" px={{ base: "4", md: "8" }} py="8">
+          {/* Card Principal do Perfil */}
           <Box
             bg={white}
             borderRadius="2xl"
@@ -103,6 +111,7 @@ export default function ClientProfile() {
             borderColor="gray.100"
             overflow="hidden"
           >
+            {/* Header Banner */}
             <Box bg={blue} h="100px" position="relative">
               <Box
                 position="absolute"
@@ -113,13 +122,10 @@ export default function ClientProfile() {
               />
             </Box>
 
-            <Box px="6" pb="6">
-              <HStack
-                justify="space-between"
-                align="flex-end"
-                mt="-36px"
-                mb="4"
-              >
+            {/* Conteúdo do Perfil */}
+            <Box px={{ base: "4", md: "6" }} pb="6">
+              {/* Bloco de Avatar e Ação com alinhamento responsivo */}
+              <Flex justify="space-between" align="flex-end" mt="-36px" mb="4">
                 {user?.image ? (
                   <Box
                     w="72px"
@@ -127,7 +133,7 @@ export default function ClientProfile() {
                     rounded="full"
                     overflow="hidden"
                     border="4px solid"
-                    borderColor={blue}
+                    borderColor={white}
                     shadow="md"
                     flexShrink={0}
                     position="relative"
@@ -180,7 +186,10 @@ export default function ClientProfile() {
                   <Portal>
                     <Dialog.Backdrop />
                     <Dialog.Positioner>
-                      <Dialog.Content borderRadius="2xl" p="4">
+                      <Dialog.Content
+                        borderRadius={{ base: "none", md: "2xl" }}
+                        p="4"
+                      >
                         <Dialog.Header pb="2" pt="2">
                           <HStack
                             justify="space-between"
@@ -209,7 +218,7 @@ export default function ClientProfile() {
                         </Dialog.Header>
                         <Dialog.Body py="4" px="2">
                           <Box display="flex" flexDir="column" gap="5">
-                            {/* Foto de perfil */}
+                            {/* Foto de perfil no Modal */}
                             <Box w="full">
                               <Text
                                 fontSize="xs"
@@ -311,10 +320,9 @@ export default function ClientProfile() {
 
                             <Separator borderColor="gray.100" />
 
-                            {/* Dados pessoais */}
-                            <Box
-                              display="grid"
-                              gridTemplateColumns="1fr 1fr"
+                            {/* Inputs do Modal adaptáveis para Mobile */}
+                            <SimpleGrid
+                              columns={{ base: 1, sm: 2 }}
                               gap="4"
                               w="full"
                             >
@@ -394,7 +402,9 @@ export default function ClientProfile() {
                                   }
                                 />
                               </Field.Root>
-                              <Field.Root gridColumn="span 2">
+                              <Field.Root
+                                gridColumn={{ base: "span 1", sm: "span 2" }}
+                              >
                                 <Field.Label
                                   fontSize="xs"
                                   color="gray.500"
@@ -415,7 +425,7 @@ export default function ClientProfile() {
                                   }
                                 />
                               </Field.Root>
-                            </Box>
+                            </SimpleGrid>
                           </Box>
                         </Dialog.Body>
                         <Dialog.Footer pt="0">
@@ -435,58 +445,48 @@ export default function ClientProfile() {
                     </Dialog.Positioner>
                   </Portal>
                 </Dialog.Root>
-              </HStack>
+              </Flex>
 
               <Heading fontSize="lg" fontWeight="bold" color="gray.800">
                 {user?.name}
               </Heading>
               <Text fontSize="xs" color="gray.400" mt="0.5">
-                Membro desde {new Date(user?.created_at).getFullYear()}
+                Membro desde{" "}
+                {user?.created_at
+                  ? new Date(user.created_at).getFullYear()
+                  : "—"}
               </Text>
 
               <Separator my="4" borderColor="gray.100" />
 
-              <HStack gap="2" justify="space-between">
+              {/* 🔥 CORREÇÃO 1: InfoItems transformados em SimpleGrid para quebrar linha em telemóveis sem esmagar */}
+              <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} gap="4" w="full">
                 <InfoItem
                   icon={LuMail}
                   label="Email"
                   value={user?.email ?? "-"}
-                />
-                <Separator
-                  orientation="vertical"
-                  h="60px"
-                  borderColor="gray.100"
                 />
                 <InfoItem
                   icon={LuPhone}
                   label="Telefone"
                   value={user?.phone ?? "-"}
                 />
-                <Separator
-                  orientation="vertical"
-                  h="60px"
-                  borderColor="gray.100"
-                />
                 <InfoItem
                   icon={LuMapPin}
                   label="Endereço"
                   value={user?.address ?? "-"}
-                />
-                <Separator
-                  orientation="vertical"
-                  h="60px"
-                  borderColor="gray.100"
                 />
                 <InfoItem
                   icon={LuCake}
                   label="Aniversário"
                   value={user?.birthday ?? "-"}
                 />
-              </HStack>
+              </SimpleGrid>
             </Box>
           </Box>
 
-          <HStack gap="4" mt="6" align="stretch">
+          {/* 🔥 CORREÇÃO 2: Cards de estatísticas mudados de HStack para SimpleGrid */}
+          <SimpleGrid columns={{ base: 1, sm: 3 }} gap="4" mt="6">
             {[
               { icon: LuClock, value: "24", label: "Serviços Contratados" },
               { icon: LuHeart, value: "8", label: "Profissionais Favoritos" },
@@ -496,7 +496,6 @@ export default function ClientProfile() {
               return (
                 <Box
                   key={s.label}
-                  flex="1"
                   rounded="2xl"
                   border="1px solid"
                   borderColor="gray.100"
@@ -535,7 +534,7 @@ export default function ClientProfile() {
                 </Box>
               );
             })}
-          </HStack>
+          </SimpleGrid>
         </Box>
       </Box>
     </Box>

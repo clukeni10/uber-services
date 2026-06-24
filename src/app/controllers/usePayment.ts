@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { processPayment } from "@/app/models/payments";
-import type { InvoiceData } from "@/app/utils/generateInvoicePDF";
+import type { InvoiceData } from "../types/InvoiceData";
 
 export function usePayment() {
   const [loading, setLoading] = useState(false);
@@ -12,29 +12,55 @@ export function usePayment() {
   async function handlePayment(
     service_id: number,
     method: "card" | "transfer" | "multicaixa",
-    extra?: { card_last4?: string; phone?: string }
+    extra?: { card_last4?: string; phone?: string },
   ) {
+    if (loading) return; // evita dupla chamada
+
     setLoading(true);
     setError(null);
     setSuccess(false);
 
-    await new Promise((r) => setTimeout(r, 2000));
-
     try {
-      const result = await processPayment(service_id, { method, ...extra });
-console.log("RESULT:", result);
-console.log("INVOICE DATA:", result.invoice_data);
-setReference(result.reference);
-setInvoiceData(result.invoice_data);
-setSuccess(true);
-return result;
+      console.log("A processar pagamento:", { service_id, method, extra });
 
+      // Simula delay de 2 segundos
+      await new Promise((r) => setTimeout(r, 2000));
+
+      const result = await processPayment(service_id, { method, ...extra });
+      console.log("Resultado recebido do model:", result);
+
+      // Em vez de 'return', lança um erro para que o catch trate e limpe o loading
+      if (!result) {
+        throw new Error("Resposta inválida do servidor.");
+      }
+
+      setReference(result.reference ?? null);
+      setInvoiceData(result.invoice_data ?? null);
+      setSuccess(true);
     } catch (err: any) {
-      setError(err.message);
+      console.error("Erro apanhado no hook usePayment:", err);
+      setError(err.message ?? "Erro desconhecido ao processar pagamento.");
     } finally {
-      setLoading(false);
+      console.log("Fluxo finalizado: desligando o loading.");
+      setLoading(false); // Agora é garantido correr!
     }
   }
 
-  return { handlePayment, loading, error, success, reference, invoiceData };
+  function reset() {
+    setLoading(false);
+    setError(null);
+    setSuccess(false);
+    setReference(null);
+    setInvoiceData(null);
+  }
+
+  return {
+    handlePayment,
+    loading,
+    error,
+    success,
+    reference,
+    invoiceData,
+    reset,
+  };
 }

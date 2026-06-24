@@ -16,8 +16,10 @@ import { useState, useEffect } from "react";
 import { getAdminStats } from "@/app/models/admin";
 import { useSidebar } from "@/app/context/SidebarContext";
 import MobileMenuButton from "../components/mobile_menu_button";
-
+import { usePageTitle } from "@/app/hooks/usePageTitle";
+ 
 export default function AdminDashboard() {
+  usePageTitle("Dashboard Admin | Workê");
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const { sidebarW } = useSidebar();

@@ -19,9 +19,11 @@ import Footer from "../components/footer";
 import { LuUser, LuBriefcase } from "react-icons/lu";
 import { useState } from "react";
 import { useRegister } from "@/app/controllers/useRegister";
+import { usePageTitle } from "@/app/hooks/usePageTitle";
 
 type TabValue = "user" | "worker";
 export default function Register() {
+        usePageTitle('Registro | Workê');
   const [visible, setVisible] = useState(false);
   const [selectedTab, setSelectedTab] = useState<TabValue>("user");
 

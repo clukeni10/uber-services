@@ -12,7 +12,7 @@ import {
   Dialog,
   Portal,
   Field,
-  Input, 
+  Input,
   Button,
   Spinner,
   Textarea,
@@ -42,6 +42,7 @@ import {
   FileUploadDropzone,
   FileUploadRoot,
 } from "@/components/ui/file-upload";
+import { usePageTitle } from "@/app/hooks/usePageTitle";
 
 const specialties = createListCollection({
   items: [
@@ -57,8 +58,10 @@ const specialties = createListCollection({
 });
 
 export default function ProfessionalProfile() {
+  usePageTitle("Meu Perfil | Workê");
+
   const { worker, loading, handleUpdate } = useWorkerProfile();
-  const { sidebarW } = useSidebar();
+  const { sidebarW } = useSidebar(); 
 
   const [form, setForm] = useState({
     name: "",

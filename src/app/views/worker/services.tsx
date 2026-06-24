@@ -11,7 +11,7 @@ import {
   Button,
   Tabs,
 } from "@chakra-ui/react";
-import { 
+import {
   LuClock,
   LuCircleCheck,
   LuCircleX,
@@ -27,7 +27,7 @@ import { useWorkerServices } from "@/app/controllers/useWorkerServices";
 import type { Service } from "@/app/types/ServiceType";
 import { useSidebar } from "@/app/context/SidebarContext";
 import { useState, useEffect } from "react";
-
+import { usePageTitle } from "@/app/hooks/usePageTitle";
 
 function ActiveTimer({ startedAt }: { startedAt: string }) {
   const [elapsed, setElapsed] = useState("");
@@ -38,7 +38,9 @@ function ActiveTimer({ startedAt }: { startedAt: string }) {
       const h = Math.floor(diff / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       const s = Math.floor((diff % 60000) / 1000);
-      setElapsed(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`);
+      setElapsed(
+        `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`,
+      );
     }
     update();
     const interval = setInterval(update, 1000);
@@ -47,8 +49,13 @@ function ActiveTimer({ startedAt }: { startedAt: string }) {
 
   return (
     <HStack gap="1.5" bg="#8B5CF615" px="3" py="1.5" borderRadius="full">
-      <Box w="6px" h="6px" borderRadius="full" bg="#8B5CF6"
-        css={{ animation: "ping 1s cubic-bezier(0,0,0.2,1) infinite" }} />
+      <Box
+        w="6px"
+        h="6px"
+        borderRadius="full"
+        bg="#8B5CF6"
+        css={{ animation: "ping 1s cubic-bezier(0,0,0.2,1) infinite" }}
+      />
       <Text fontSize="xs" fontWeight="bold" color="#8B5CF6" fontFamily="mono">
         {elapsed}
       </Text>
@@ -65,8 +72,9 @@ const statusConfig = {
 };
 
 export default function WorkerServices() {
+  usePageTitle("Meus Serviços | Workê");
   const { sidebarW } = useSidebar();
-  
+
   const {
     loading,
     actionLoading,
@@ -286,7 +294,7 @@ export default function WorkerServices() {
                 services={active}
                 emptyMessage="Nenhum serviço ativo"
                 renderActions={(s) => (
-                  <HStack gap="2" mt="4">
+                  <Box w="full" mt="4">
                     {s.status === "accepted" && (
                       <Button
                         w="full"
@@ -301,25 +309,38 @@ export default function WorkerServices() {
                         Iniciar serviço
                       </Button>
                     )}
+
                     {s.status === "active" && s.started_at && (
-                      <>
-                      <Button
-                        w="full"
-                        bg="#10B981"
-                        color={white}
-                        borderRadius="lg"
-                        size="sm"
-                        _hover={{ opacity: 0.9 }}
-                        loading={actionLoading === s.id}
-                        onClick={() => handleComplete(s.id)}
-                      >
-                        Concluir serviço
-                      </Button>
-                      <ActiveTimer startedAt={s.started_at} />
-                      </>
-                      
+                      /* Trocamos para VStack para alinhar verticalmente e não quebrar o layout */
+                      <VStack gap="3" align="stretch" w="full">
+                        {/* O Cronómetro ganha uma área limpa e centralizada antes do botão */}
+                        <Flex
+                          justifyContent="center"
+                          alignItems="center"
+                          p="2"
+                          bg="gray.50"
+                          borderRadius="md"
+                          border="1px dashed"
+                          borderColor="gray.200"
+                        >
+                          <ActiveTimer startedAt={s.started_at} />
+                        </Flex>
+
+                        <Button
+                          w="full"
+                          bg="#10B981"
+                          color={white}
+                          borderRadius="lg"
+                          size="sm"
+                          _hover={{ opacity: 0.9 }}
+                          loading={actionLoading === s.id}
+                          onClick={() => handleComplete(s.id)}
+                        >
+                          Concluir serviço
+                        </Button>
+                      </VStack>
                     )}
-                  </HStack>
+                  </Box>
                 )}
               />
             </Tabs.Content>
@@ -372,7 +393,7 @@ function ServiceList({
   return (
     <VStack gap="4" align="stretch">
       {services.map((s) => (
-        <ServiceCard  key={s.id} service={s} renderActions={renderActions} />
+        <ServiceCard key={s.id} service={s} renderActions={renderActions} />
       ))}
     </VStack>
   );

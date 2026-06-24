@@ -1,5 +1,4 @@
-"use client";
-import { blue, white, highlights, highlights_hover } from "@/app/utils/COLORS";
+import { blue, white, highlights, highlights_hover } from "@/app/utils/COLORS"; // Ajusta o caminho do import se necessário
 import {
   Box,
   Flex,
@@ -11,51 +10,79 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { LuSettings, LuMenu, LuX } from "react-icons/lu";
+import { LuMenu, LuX } from "react-icons/lu";
 
 const navLinks = [
   { label: "Início", href: "/" },
   { label: "Serviços", href: "/services" },
-  { label: "Profissionais", href: "/workers" }
-]
-
+  { label: "Workers", href: "/workers" },
+];
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Box as="header" bg={blue} position="sticky" top={0} zIndex={100} w="100%" borderBottom="1px solid" borderColor="rgba(0,0,0,0.2)">
+    <Box
+      as="header"
+      bg={blue}
+      position="sticky"
+      top={0}
+      zIndex={100}
+      w="100%"
+      borderBottom="1px solid"
+      borderColor="rgba(0,0,0,0.2)"
+    >
       <Flex
         px={{ base: 4, md: 8 }}
-        h="64px"
+        h="72px"
         align="center"
         justify="space-between"
         maxW="1280px"
         mx="auto"
       >
-        <Flex align="center" gap={3}>
+        {/* Logo & Brand Name */}
+        <Flex align="center" gap={4}>
+          {/* Aumentado radicalmente para 80px no desktop e adicionado uma margem negativa para não quebrar o alinhamento */}
           <Box
-            w="42px"
-            h="42px"
-            rounded="md"
-            bg={highlights}
+            w={{ base: "64px", md: "80px" }}
+            h={{ base: "64px", md: "80px" }}
             display="flex"
             alignItems="center"
             justifyContent="center"
             flexShrink={0}
+            my="-10px" /* Impede que o logo gigante estique o Header verticalmente de forma feia */
           >
-            <LuSettings color={white} size={22} />
+            <img
+              src="/logo.png"
+              alt="Workê Logo"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                transform:
+                  "scale(1.1)" /* Força um ganho de 10% extra eliminando possíveis bordas invisíveis da imagem */,
+              }}
+            />
           </Box>
+
+          {/* Nome com a fonte Sedgwick Ave Display */}
           <Heading
             color={white}
-            fontSize={{ base: "lg", md: "xl" }}
-            fontWeight={700}
-            letterSpacing="tight"
+            fontSize={{
+              base: "3xl",
+              md: "4xl",
+            }} /* Subimos para 4xl para acompanhar o peso do novo logo */
+            fontWeight={400}
+            letterSpacing="0.02em"
+            fontFamily="'Sedgwick Ave Display', cursive"
+            lineHeight="1"
+            mt="2px"
           >
             Workê
           </Heading>
         </Flex>
 
+        {/* Desktop Navigation */}
         <HStack gap={7} display={{ base: "none", md: "flex" }}>
           {navLinks.map((link) => (
             <Link
@@ -87,11 +114,13 @@ export default function Header() {
             _active={{ transform: "scale(0.97)" }}
             transition="all 0.2s"
           >
-            <Link href="/login" color={white} textDecoration="none">Entrar</Link>
+            <Link href="/login" color={white} textDecoration="none">
+              Entrar
+            </Link>
           </Button>
         </HStack>
 
-
+        {/* Mobile Menu Button */}
         <IconButton
           display={{ base: "flex", md: "none" }}
           aria-label="Abrir menu"
@@ -104,6 +133,7 @@ export default function Header() {
         </IconButton>
       </Flex>
 
+      {/* Mobile Drawer/Menu */}
       <Box
         display={{ md: "none" }}
         overflow="hidden"
@@ -111,7 +141,7 @@ export default function Header() {
         transition="max-height 0.3s ease"
         bg={blue}
       >
-        <VStack align="stretch" gap={0} px={4} pb={4}>
+        <VStack align="stretch" gap={4} px={4} pb={4}>
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -131,12 +161,11 @@ export default function Header() {
             </Link>
           ))}
           <Button
-            mt={4}
             bg={highlights}
             color={white}
             fontWeight={700}
             borderRadius="full"
-            _hover={{ bg: "#ea6c0a" }}
+            _hover={{ bg: highlights_hover }}
             w="100%"
           >
             Entrar

@@ -6,72 +6,102 @@ import {
   Heading,
   VStack,
   Grid,
+  Spinner,
+  Badge,
 } from "@chakra-ui/react";
 import Sidebar from "../components/sidebar";
 import { blue, white } from "@/app/utils/COLORS";
 import {
   LuClock,
-  LuHeart,
-  LuStar,
   LuBriefcase,
   LuTrendingUp,
   LuBell,
+  LuCircleCheck,
 } from "react-icons/lu";
 import { useSidebar } from "@/app/context/SidebarContext";
 import MobileMenuButton from "../components/mobile_menu_button";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { getClientServices } from "@/app/models/services";
+import { usePageTitle } from "@/app/hooks/usePageTitle";
 
-
-const stats = [
-  { label: "Serviços Contratados", value: "24", icon: LuClock, color: blue },
-  { label: "Favoritos", value: "8", icon: LuHeart, color: "#E11D48" },
-  { label: "Avaliação Média", value: "4.8", icon: LuStar, color: "#F59E0B" },
-  { label: "Em Andamento", value: "1", icon: LuBriefcase, color: "#10B981" },
-];
-
-const recentActivity = [
-  {
-    title: "Instalação de ar-condicionado",
-    prof: "Rafael Costa",
-    time: "Hoje, 14:00",
-    status: "Em andamento",
-    color: "#F59E0B",
-  },
-  {
-    title: "Pintura quarto",
-    prof: "Juliana Pereira",
-    time: "02 mai",
-    status: "Concluído",
-    color: "#10B981",
-  },
-  {
-    title: "Limpeza pós-obra",
-    prof: "Mariana Silva",
-    time: "24 abr",
-    status: "Concluído",
-    color: "#10B981",
-  },
-];
+const statusConfig: Record<
+  string,
+  { label: string; color: string; bg: string }
+> = {
+  pending: { label: "Pendente", color: "#F59E0B", bg: "#F59E0B15" },
+  accepted: { label: "Aceite", color: "#3B82F6", bg: "#3B82F615" },
+  active: { label: "Em curso", color: "#8B5CF6", bg: "#8B5CF615" },
+  completed: { label: "Concluído", color: "#10B981", bg: "#10B98115" },
+  cancelled: { label: "Cancelado", color: "#EF4444", bg: "#EF444415" },
+};
 
 export default function ClientDashboard() {
+   usePageTitle("Dashboard Cliente | Workê");
+  const { sidebarW } = useSidebar();
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const firstName = user?.name?.split(" ")[0] ?? "Utilizador";
 
-  const { sidebarW } = useSidebar();
-  {
-    /* Feito pela IA, vou mudar isso, está podre */
-  }
+  const [services, setServices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const data = await getClientServices();
+        if (!cancelled) setServices(data);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const total = services.length;
+  const active = services.filter((s) => s.status === "active").length;
+  const completed = services.filter((s) => s.status === "completed").length;
+  const pending = services.filter((s) => s.status === "pending").length;
+  const recent = [...services].slice(0, 5);
+
+  const stats = [
+    {
+      label: "Serviços Contratados",
+      value: total,
+      icon: LuBriefcase,
+      color: blue,
+    },
+    { label: "Pendentes", value: pending, icon: LuClock, color: "#F59E0B" },
+    {
+      label: "Em Andamento",
+      value: active,
+      icon: LuTrendingUp,
+      color: "#8B5CF6",
+    },
+    {
+      label: "Concluídos",
+      value: completed,
+      icon: LuCircleCheck,
+      color: "#10B981",
+    },
+  ];
+
   return (
     <Box display="flex" h="100vh" bg="gray.50">
-      <Sidebar /> 
-      <MobileMenuButton /> 
-      
+      <Sidebar />
+      <MobileMenuButton />
+
       <Box
         flex="1"
         ml={{ base: "0", md: sidebarW }}
         transition="margin 0.25s ease"
         overflow="auto"
       >
-        <Box maxW="1100px" mx="auto" px="8" py="8">
+        <Box maxW="1100px" mx="auto" px={{ base: 4, md: 8 }} py="8">
           {/* Top bar */}
           <HStack justify="space-between" mb="8">
             <VStack align="flex-start" gap="0">
@@ -99,58 +129,70 @@ export default function ClientDashboard() {
             </Flex>
           </HStack>
 
-          <Grid
-            templateColumns={{ base: "repeat(2,1fr)", md: "repeat(4,1fr)" }}
-            gap="4"
-            mb="8"
-          >
-            {stats.map((s) => {
-              const Icon = s.icon;
-              return (
-                <Box
-                  key={s.label}
-                  bg={white}
-                  borderRadius="2xl"
-                  border="1px solid"
-                  borderColor="gray.100"
-                  p="5"
-                  shadow="sm"
-                  transition="all 0.2s ease"
-                  _hover={{
-                    transform: "translateY(-2px)",
-                    shadow: "md",
-                    borderColor: s.color,
-                  }}
-                >
-                  <Flex
-                    w="40px"
-                    h="40px"
-                    borderRadius="xl"
-                    bg={`${s.color}15`}
-                    color={s.color}
-                    alignItems="center"
-                    justifyContent="center"
-                    mb="3"
+          {/* Stats */}
+          {loading ? (
+            <Flex h="120px" alignItems="center" justifyContent="center" mb="8">
+              <Spinner color={blue} />
+            </Flex>
+          ) : (
+            <Grid
+              templateColumns={{ base: "repeat(2,1fr)", md: "repeat(4,1fr)" }}
+              gap="4"
+              mb="8"
+            >
+              {stats.map((s) => {
+                const Icon = s.icon;
+                return (
+                  <Box
+                    key={s.label}
+                    bg={white}
+                    borderRadius="2xl"
+                    border="1px solid"
+                    borderColor="gray.100"
+                    p="5"
+                    shadow="sm"
+                    transition="all 0.2s ease"
+                    _hover={{
+                      transform: "translateY(-2px)",
+                      shadow: "md",
+                      borderColor: s.color,
+                    }}
                   >
-                    <Icon size={18} />
-                  </Flex>
-                  <Text fontSize="2xl" fontWeight="extrabold" color="gray.800">
-                    {s.value}
-                  </Text>
-                  <Text
-                    fontSize="xs"
-                    color="gray.400"
-                    fontWeight="medium"
-                    mt="0.5"
-                  >
-                    {s.label}
-                  </Text>
-                </Box>
-              );
-            })}
-          </Grid>
+                    <Flex
+                      w="40px"
+                      h="40px"
+                      borderRadius="xl"
+                      bg={`${s.color}15`}
+                      color={s.color}
+                      alignItems="center"
+                      justifyContent="center"
+                      mb="3"
+                    >
+                      <Icon size={18} />
+                    </Flex>
+                    <Text
+                      fontSize="2xl"
+                      fontWeight="extrabold"
+                      color="gray.800"
+                    >
+                      {s.value}
+                    </Text>
+                    <Text
+                      fontSize="xs"
+                      color="gray.400"
+                      fontWeight="medium"
+                      mt="0.5"
+                    >
+                      {s.label}
+                    </Text>
+                  </Box>
+                );
+              })}
+            </Grid>
+          )}
 
           <Grid templateColumns={{ base: "1fr", lg: "1.6fr 1fr" }} gap="6">
+            {/* Actividade Recente */}
             <Box
               bg={white}
               borderRadius="2xl"
@@ -174,59 +216,86 @@ export default function ClientDashboard() {
                   color={blue}
                   fontWeight="semibold"
                   cursor="pointer"
+                  onClick={() => navigate("/client/services")}
                 >
                   Ver tudo
                 </Text>
               </HStack>
-              <VStack gap="0" divideY="1px" divideColor="gray.100">
-                {recentActivity.map((a) => (
-                  <HStack
-                    key={a.title}
-                    px="5"
-                    py="4"
-                    w="full"
-                    justify="space-between"
-                    _hover={{ bg: "gray.50" }}
-                    transition="background 0.15s"
-                  >
-                    <HStack gap="3">
-                      <Box
-                        w="8px"
-                        h="8px"
-                        borderRadius="full"
-                        bg={a.color}
-                        flexShrink={0}
-                      />
-                      <VStack align="flex-start" gap="0">
-                        <Text
-                          fontSize="sm"
+
+              {loading ? (
+                <Flex h="120px" alignItems="center" justifyContent="center">
+                  <Spinner color={blue} size="sm" />
+                </Flex>
+              ) : recent.length === 0 ? (
+                <Flex h="120px" alignItems="center" justifyContent="center">
+                  <Text fontSize="sm" color="gray.400">
+                    Sem actividade recente
+                  </Text>
+                </Flex>
+              ) : (
+                <VStack gap="0" divideY="1px" divideColor="gray.100">
+                  {recent.map((s) => {
+                    const config = statusConfig[s.status];
+                    return (
+                      <HStack
+                        key={s.id}
+                        px="5"
+                        py="4"
+                        w="full"
+                        justify="space-between"
+                        _hover={{ bg: "gray.50" }}
+                        transition="background 0.15s"
+                      >
+                        <HStack gap="3">
+                          <Box
+                            w="8px"
+                            h="8px"
+                            borderRadius="full"
+                            bg={config?.color ?? "gray.300"}
+                            flexShrink={0}
+                          />
+                          <VStack align="flex-start" gap="0">
+                            <Text
+                              fontSize="sm"
+                              fontWeight="semibold"
+                              color="gray.800"
+                            >
+                              {s.description}
+                            </Text>
+                            <Text fontSize="xs" color="gray.400">
+                              com {s.worker_name ?? "—"} ·{" "}
+                              {s.scheduled_at
+                                ? new Date(s.scheduled_at).toLocaleDateString(
+                                    "pt-PT",
+                                    {
+                                      day: "2-digit",
+                                      month: "short",
+                                    },
+                                  )
+                                : "—"}
+                            </Text>
+                          </VStack>
+                        </HStack>
+                        <Badge
+                          bg={config?.bg}
+                          color={config?.color}
+                          borderRadius="full"
+                          px="2.5"
+                          py="1"
+                          fontSize="10px"
                           fontWeight="semibold"
-                          color="gray.800"
+                          whiteSpace="nowrap"
                         >
-                          {a.title}
-                        </Text>
-                        <Text fontSize="xs" color="gray.400">
-                          com {a.prof} · {a.time}
-                        </Text>
-                      </VStack>
-                    </HStack>
-                    <Box
-                      px="2.5"
-                      py="1"
-                      borderRadius="full"
-                      bg={`${a.color}15`}
-                      color={a.color}
-                      fontSize="10px"
-                      fontWeight="semibold"
-                      whiteSpace="nowrap"
-                    >
-                      {a.status}
-                    </Box>
-                  </HStack>
-                ))}
-              </VStack>
+                          {config?.label}
+                        </Badge>
+                      </HStack>
+                    );
+                  })}
+                </VStack>
+              )}
             </Box>
 
+            {/* Banner CTA */}
             <Box
               bg={blue}
               borderRadius="2xl"
@@ -290,7 +359,7 @@ export default function ClientDashboard() {
                 cursor="pointer"
                 position="relative"
                 _hover={{ opacity: 0.9 }}
-                onClick={() => (window.location.href = "/professionals")}
+                onClick={() => navigate("/client/services")}
               >
                 Explorar profissionais
               </Box>

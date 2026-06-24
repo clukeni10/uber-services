@@ -8,7 +8,7 @@ import {
   Link,
   SegmentGroup,
   Center,
-  Input,
+  Input, 
   Field,
   Button,
 } from "@chakra-ui/react";
@@ -20,9 +20,11 @@ import { LuUser, LuBriefcase } from "react-icons/lu";
 import { useState } from "react";
 import { useLogin } from "@/app/controllers/useLogin";
 import { useNavigate } from "react-router-dom";
+import { usePageTitle } from "@/app/hooks/usePageTitle";
 
 type TabValue = "user" | "worker";
 export default function Login() {
+        usePageTitle('Login | Workê');
 
   const [visible, setVisible] = useState(false);
   const [selectedTab, setSelectedTab] = useState<TabValue>("user");

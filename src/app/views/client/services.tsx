@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Flex,
@@ -13,7 +15,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import {
-  LuPlug,
+  LuZap,
   LuWrench,
   LuSparkles,
   LuPaintbrush,
@@ -24,6 +26,8 @@ import {
   LuX,
   LuBriefcase,
   LuClock,
+  LuCamera,
+  LuSmartphone,
 } from "react-icons/lu";
 import Sidebar from "../components/sidebar";
 import { blue, white } from "@/app/utils/COLORS";
@@ -36,35 +40,49 @@ import PaymentModal from "../components/payment_modal";
 import WorkerCard from "../components/worker_card2";
 import ClientServiceCard from "../components/client_service_card";
 import { useState } from "react";
+import { usePageTitle } from "@/app/hooks/usePageTitle";
 
+// 1. Mapeamento robusto que aceita tanto "LuPlug" como "plug" ou "LuPlug" vindo da API
 const iconMap: Record<string, React.ElementType> = {
-  LuPlug,
+  LuZap,
+  plug: LuZap,
   LuWrench,
+  wrench: LuWrench,
   LuSparkles,
+  sparkles: LuSparkles,
   LuPaintbrush,
+  paintbrush: LuPaintbrush,
   LuHammer,
+  hammer: LuHammer,
   LuTruck,
+  truck: LuTruck,
   LuScissors,
+  scissors: LuScissors,
   LuLeaf,
+  leaf: LuLeaf,
+  LuCamera,
+  camera: LuCamera,
+  LuSmartphone,
+  phone: LuSmartphone,
 };
 
 const categoryColors = [
-  { bg: `${blue}15`, color: blue },
-  { bg: "#F9731615", color: "#F97316" },
-  { bg: "#10B98115", color: "#10B981" },
-  { bg: "#8B5CF615", color: "#8B5CF6" },
-  { bg: "#EF444415", color: "#EF4444" },
-  { bg: "#F59E0B15", color: "#F59E0B" },
-  { bg: "#06B6D415", color: "#06B6D4" },
-  { bg: "#EC489915", color: "#EC4899" },
+  { bg: "blue.50", color: blue },
+  { bg: "orange.50", color: "#F97316" },
+  { bg: "emerald.50", color: "#10B981" },
+  { bg: "purple.50", color: "#8B5CF6" },
+  { bg: "red.50", color: "#EF4444" },
+  { bg: "amber.50", color: "#F59E0B" },
+  { bg: "cyan.50", color: "#06B6D4" },
+  { bg: "pink.50", color: "#EC4899" },
 ];
 
-
-
 export default function ClientServices() {
+  usePageTitle("Explorar Serviços | Workê");
+
   const {
-    categories,
-    workers,
+    categories = [], // Evita erros se o retorno inicial for undefined
+    workers = [],
     selectedCategory,
     setSelectedCategory,
     loadingCategories,
@@ -72,10 +90,10 @@ export default function ClientServices() {
   } = useServicesPage();
 
   const {
-    pending,
-    active,
-    completed,
-    cancelled,
+    pending = [],
+    active = [],
+    completed = [],
+    cancelled = [],
     loading: loadingServices,
     actionLoading,
     handleCancel,
@@ -85,14 +103,25 @@ export default function ClientServices() {
     pending.length + active.length + completed.length + cancelled.length;
 
   const [paymentOpen, setPaymentOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState<{ id: number; amount: number } | null>(null);
+  const [selectedService, setSelectedService] = useState<{
+    id: number;
+    amount: number;
+    workerId: number;
+    workerName: string;
+  } | null>(null);
   const { refetch } = useClientServices();
 
-  function openPaymentModal(id: number, amount: number) {
-  setSelectedService({ id, amount });
-  setPaymentOpen(true);
-}
+  function openPaymentModal(
+    id: number,
+    amount: number,
+    workerId: number,
+    workerName: string,
+  ) {
+    setSelectedService({ id, amount, workerId, workerName });
+    setPaymentOpen(true);
+  }
   const { sidebarW } = useSidebar();
+
   return (
     <Box display="flex" minH="100vh" bg="gray.50">
       <Sidebar />
@@ -169,7 +198,7 @@ export default function ClientServices() {
                   <Text>Os meus pedidos</Text>
                   {totalPedidos > 0 && (
                     <Badge
-                      bg={`${blue}15`}
+                      bg="blue.50"
                       color={blue}
                       borderRadius="full"
                       fontSize="10px"
@@ -196,6 +225,13 @@ export default function ClientServices() {
                 <Center h="120px">
                   <Spinner color={blue} />
                 </Center>
+              ) : categories.length === 0 ? (
+                /* Caso a API retorne uma lista vazia, mostra um aviso em vez de uma tela em branco */
+                <Center h="120px">
+                  <Text color="gray.400" fontSize="sm">
+                    Nenhuma categoria encontrada.
+                  </Text>
+                </Center>
               ) : (
                 <Grid
                   templateColumns={{
@@ -207,12 +243,18 @@ export default function ClientServices() {
                   mb="8"
                 >
                   {categories.map((c, i) => {
-                    const Icon = iconMap[c.icon] ?? LuWrench;
+                    // Sanitização da string do ícone para evitar quebras se vier em lowercase
+                    const iconKey = c.icon ? c.icon.trim() : "";
+                    const Icon =
+                      iconMap[iconKey] ??
+                      iconMap[iconKey.toLowerCase()] ??
+                      LuWrench;
                     const palette = categoryColors[i % categoryColors.length];
                     const isSelected = selectedCategory === c.name;
+
                     return (
                       <Box
-                        key={c.id}
+                        key={c.id ?? i}
                         bg={isSelected ? palette.color : white}
                         borderRadius="2xl"
                         border="1.5px solid"
@@ -251,19 +293,21 @@ export default function ClientServices() {
                         >
                           {c.name}
                         </Text>
+                        {c.description && (
+                          <Text
+                            fontSize="10px"
+                            color={isSelected ? "whiteAlpha.800" : "gray.400"}
+                            mt="0.5"
+                          >
+                            {c.description}
+                          </Text>
+                        )}
                         <Text
                           fontSize="10px"
                           color={isSelected ? "whiteAlpha.800" : "gray.400"}
                           mt="0.5"
                         >
-                          {c.description}
-                        </Text>
-                        <Text
-                          fontSize="10px"
-                          color={isSelected ? "whiteAlpha.800" : "gray.400"}
-                          mt="0.5"
-                        >
-                          {c.worker_count} disponíveis
+                          {c.worker_count ?? 0} disponíveis
                         </Text>
                       </Box>
                     );
@@ -353,7 +397,6 @@ export default function ClientServices() {
                 </Center>
               ) : (
                 <VStack gap="6" align="stretch">
-                  {/* Pendentes */}
                   {pending.length > 0 && (
                     <ServiceSection
                       title="Pendentes"
@@ -375,32 +418,38 @@ export default function ClientServices() {
                     />
                   )}
 
-                  {/* Ativos */}
                   {active.length > 0 && (
                     <ServiceSection title="Em curso" services={active} />
                   )}
 
-                  {/* Concluídos */}
                   {completed.length > 0 && (
                     <ServiceSection
                       title="Concluídos"
                       services={completed}
-                      renderActions={(s) =>
+                      renderActions={(
+                        s: any, // Adicionado : any aqui para resolver o ts(7006)
+                      ) =>
                         (s as any).payment_status === "pending" ? (
                           <Button
                             size="sm"
                             bg={blue}
+                            p="4"
                             color={white}
                             borderRadius="lg"
                             onClick={() =>
-                              openPaymentModal(s.id, Number(s.amount))
+                              openPaymentModal(
+                                s.id,
+                                Number((s as any).amount ?? 0),
+                                (s as any).worker_name ?? "",
+                                (s as any).worker_id ?? 0,
+                              )
                             }
                           >
-                            Pagar {Number(s.amount ?? 0).toFixed(2)} Kz
+                            Pagar
                           </Button>
                         ) : (
                           <Badge
-                            bg="#10B98115"
+                            bg="emerald.50"
                             color="#10B981"
                             borderRadius="full"
                             px="2"
@@ -413,7 +462,6 @@ export default function ClientServices() {
                     />
                   )}
 
-                  {/* Cancelados */}
                   {cancelled.length > 0 && (
                     <ServiceSection title="Cancelados" services={cancelled} />
                   )}
@@ -423,14 +471,15 @@ export default function ClientServices() {
           </Tabs.Root>
         </Box>
       </Box>
-      
+
       {selectedService && (
         <PaymentModal
           isOpen={paymentOpen}
           onClose={() => setPaymentOpen(false)}
           serviceId={selectedService.id}
           amount={selectedService.amount}
-          workerName=""
+          workerName={selectedService.workerName}
+          workerId={selectedService.workerId}
           onSuccess={() => {
             setPaymentOpen(false);
             refetch();
@@ -464,11 +513,6 @@ function ServiceSection({
           />
         ))}
       </VStack>
-
     </Box>
   );
 }
-
-
-
-

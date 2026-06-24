@@ -1,82 +1,89 @@
 "use client";
 import { Portal, Select, createListCollection } from "@chakra-ui/react";
+import { useMemo } from "react";
 
-interface FiltersProps {
-    onCategoryChange: (value: string) => void;
-    onCityChange: (value: string) => void;
+// Definição do formato que vem do banco
+interface FilterItem {
+  label: string;
+  value: string;
 }
 
-const categories = createListCollection({
-    items: [
-        { label: "Todas as categorias", value: "" },
-        { label: "Barbeiro", value: "barbeiro" },
-        { label: "Electricista", value: "electricista" },
-        { label: "Canalizador", value: "canalizador" },
-        { label: "Pintor", value: "pintor" },
-        { label: "Diarista", value: "diarista" },
-    ],
-});
+interface FiltersProps {
+  categoriesList: FilterItem[];
+  citiesList: FilterItem[];
+  onCategoryChange: (value: string) => void;
+  onCityChange: (value: string) => void;
+}
 
-const cities = createListCollection({
-    items: [
-        { label: "Todas as cidades", value: "" },
-        { label: "Luanda", value: "luanda" },
-        { label: "Belas", value: "belas" },
-        { label: "Cazenga", value: "cazenga" },
-        { label: "Viana", value: "viana" },
-    ],
-});
+export default function Filters({ 
+  categoriesList, 
+  citiesList, 
+  onCategoryChange, 
+  onCityChange 
+}: FiltersProps) {
 
-export default function Filters({ onCategoryChange, onCityChange }: FiltersProps) {
-    return (
-        <>
-            <Select.Root
-                collection={categories} width="180px"
-                onValueChange={(e) => onCategoryChange(e.value[0] ?? "")}
-            >
-                <Select.HiddenSelect />
-                <Select.Control>
-                    <Select.Trigger bg="gray.50" borderRadius="xl" border="none" fontSize="sm">
-                        <Select.ValueText placeholder="Categoria" />
-                    </Select.Trigger>
-                </Select.Control>
-                <Portal>
-                    <Select.Positioner>
-                        <Select.Content>
-                            {categories.items.map((item) => (
-                                <Select.Item item={item} key={item.value}>
-                                    {item.label}
-                                    <Select.ItemIndicator />
-                                </Select.Item>
-                            ))}
-                        </Select.Content>
-                    </Select.Positioner>
-                </Portal>
-            </Select.Root>
+  // O useMemo garante que a coleção só seja recriada se a lista vinda da BD mudar
+  const categoriesCollection = useMemo(() => createListCollection({
+    items: [{ label: "Todas as categorias", value: "" }, ...categoriesList],
+  }), [categoriesList]);
 
-            <Select.Root
-                collection={cities} width="180px"
-                onValueChange={(e) => onCityChange(e.value[0] ?? "")}
-            >
-                <Select.HiddenSelect />
-                <Select.Control>
-                    <Select.Trigger bg="gray.50" borderRadius="xl" border="none" fontSize="sm">
-                        <Select.ValueText placeholder="Cidade" />
-                    </Select.Trigger>
-                </Select.Control>
-                <Portal> 
-                    <Select.Positioner>
-                        <Select.Content>
-                            {cities.items.map((item) => (
-                                <Select.Item item={item} key={item.value}>
-                                    {item.label}
-                                    <Select.ItemIndicator />
-                                </Select.Item>
-                            ))}
-                        </Select.Content>
-                    </Select.Positioner>
-                </Portal>
-            </Select.Root>
-        </>
-    );
+  const citiesCollection = useMemo(() => createListCollection({
+    items: [{ label: "Todas as cidades", value: "" }, ...citiesList],
+  }), [citiesList]);
+
+  return (
+    <>
+      {/* Select de Categorias */}
+      <Select.Root
+        collection={categoriesCollection}
+        width="180px"
+        onValueChange={(e) => onCategoryChange(e.value[0] ?? "")}
+      >
+        <Select.HiddenSelect />
+        <Select.Control>
+          <Select.Trigger bg="gray.50" borderRadius="xl" border="none" fontSize="sm">
+            <Select.ValueText placeholder="Categoria" />
+          </Select.Trigger>
+        </Select.Control>
+        <Portal>
+          <Select.Positioner>
+            <Select.Content>
+              {categoriesCollection.items.map((item) => (
+                <Select.Item item={item} key={item.value}>
+                  {item.label}
+                  <Select.ItemIndicator />
+                </Select.Item>
+              ))}
+            </Select.Content>
+          </Select.Positioner>
+        </Portal>
+      </Select.Root>
+
+      {/* Select de Cidades */}
+      <Select.Root
+        collection={citiesCollection}
+        width="180px"
+        onValueChange={(e) => onCityChange(e.value[0] ?? "")}
+      >
+        <Select.HiddenSelect />
+        <Select.Control>
+          <Select.Trigger bg="gray.50" borderRadius="xl" border="none" fontSize="sm">
+            <Select.ValueText placeholder="Cidade" />
+          </Select.Trigger>
+        </Select.Control>
+        <Portal>
+          <Select.Positioner>
+            <Select.Content>
+              {citiesCollection.items.map((item) => (
+                <Select.Item item={item} key={item.value}>
+                  {item.label}
+                  <Select.ItemIndicator />
+                </Select.Item>
+              ))}
+            </Select.Content>
+          </Select.Positioner>
+        </Portal>
+      </Select.Root>
+    </>
+  );
 }

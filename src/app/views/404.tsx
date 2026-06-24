@@ -2,6 +2,7 @@ import { Box, VStack, Text, Heading, HStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { blue, white, highlights } from "@/app/utils/COLORS";
 import { LuArrowLeft, LuHouse } from "react-icons/lu";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 function RobotIcon() {
   return (
@@ -9,7 +10,7 @@ function RobotIcon() {
       width="120"
       height="120"
       viewBox="0 0 120 120"
-      fill="none"
+      fill="none" 
       xmlns="http://www.w3.org/2000/svg"
     >
       {/* Antena */}
@@ -59,6 +60,7 @@ function RobotIcon() {
 }
 
 export default function NotFound() {
+  usePageTitle("Página não encontrada | Workê");
   const navigate = useNavigate();
 
   return (

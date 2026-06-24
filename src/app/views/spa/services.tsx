@@ -9,9 +9,10 @@ import {
   LuArrowRight, LuSearch,
 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { usePageTitle } from "@/app/hooks/usePageTitle";
 
-const services = [
-  {
+const services = [ 
+  { 
     icon: LuZap,
     title: "Electricista",
     desc: "Instalações, reparações e manutenção elétrica residencial e comercial com segurança garantida.",
@@ -84,6 +85,7 @@ const services = [
 ];
 
 export default function Services() {
+        usePageTitle('Serviços | Workê');
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
 

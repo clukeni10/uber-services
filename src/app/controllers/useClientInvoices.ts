@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getClientInvoices } from "@/app/models/payments";
-import type { InvoiceData } from "@/app/utils/generateInvoicePDF";
+import type { InvoiceData } from "../types/InvoiceData";
+
 
 export function useClientInvoices() {
   const [invoices, setInvoices] = useState<InvoiceData[]>([]);

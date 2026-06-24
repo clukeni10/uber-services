@@ -14,27 +14,28 @@ import Filters from "../components/filters";
 import { blue, white } from "@/app/utils/COLORS";
 import { LuSearch } from "react-icons/lu";
 import { useState } from "react";
-import { useWorkers } from "@/app/controllers/useWorkers";
+import { useWorkerFilters, useWorkers } from "@/app/controllers/useWorkers";
 import WorkerCard from "../components/worker_card";
 import { useSidebar } from "@/app/context/SidebarContext";
-import MobileMenuButton from "../components/mobile_menu_button";
+import MobileMenuButton from "../components/mobile_menu_button"; 
+import { usePageTitle } from "@/app/hooks/usePageTitle";
 
-
-{
-  /* Devo editar isso para separar componentes, por enquanto fica assim pq está a funcionar mas vai ser modificado */
-}
 export default function ClientWorkers() {
+  usePageTitle("Explorar Workers | Workê");
+
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [city, setCity] = useState("");
 
-  const { sidebarW } = useSidebar();
   const { workers, loading } = useWorkers({ search, category, city });
+  const { filters, loadingFilters } = useWorkerFilters();
+
+  const { sidebarW } = useSidebar();
 
   return (
     <Box display="flex" minH="100vh" bg="gray.50">
       <Sidebar />
-      <MobileMenuButton /> 
+      <MobileMenuButton />
 
       <Box
         w="100%"
@@ -88,11 +89,21 @@ export default function ClientWorkers() {
                   bg="gray.50"
                   borderRadius="xl"
                   value={search}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") setSearch(e.currentTarget.value);
+                  }}
                   onChange={(e) => setSearch(e.target.value)}
                   fontSize="sm"
                 />
               </InputGroup>
-              <Filters onCategoryChange={setCategory} onCityChange={setCity} />
+              {!loadingFilters && (
+                <Filters
+                  categoriesList={filters.categories}
+                  citiesList={filters.cities}
+                  onCategoryChange={setCategory}
+                  onCityChange={setCity}
+                />
+              )}
             </Box>
           </Box>
         </Box>

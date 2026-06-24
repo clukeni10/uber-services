@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import { blue, white, highlights } from "@/app/utils/COLORS";
+import { usePageTitle } from "@/app/hooks/usePageTitle";
 
 const benefits = [
   {
@@ -87,6 +88,7 @@ const stats = [
 ];
 
 export default function Workers() {
+        usePageTitle('Workers | Workê');
   const navigate = useNavigate();
 
   return (

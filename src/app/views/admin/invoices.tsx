@@ -16,7 +16,7 @@ import {
 import {
   LuFileText,
   LuCalendar,
-  LuCreditCard,
+  LuCreditCard, 
   LuDownload,
   LuSearch,
   LuUser,
@@ -32,6 +32,7 @@ import { getAdminInvoices } from "@/app/models/admin";
 import type { InvoiceData } from "@/app/types/InvoiceData";
 import { useSidebar } from "@/app/context/SidebarContext";
 import MobileMenuButton from "../components/mobile_menu_button";
+import { usePageTitle } from "@/app/hooks/usePageTitle";
 
 const methodLabel: Record<string, string> = {
   card: "Cartão",
@@ -45,6 +46,7 @@ const methodColor: Record<string, { bg: string; color: string }> = {
 };
 
 export default function AdminInvoices() {
+  usePageTitle("Admin Faturas | Workê");
   const [invoices, setInvoices] = useState<InvoiceData[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");

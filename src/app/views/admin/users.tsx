@@ -14,7 +14,7 @@ import {
   Button,
   Dialog,
   Portal,
-  Field,
+  Field, 
   Select,
   createListCollection,
   IconButton,
@@ -27,6 +27,7 @@ import { useState } from "react";
 import type { User } from "@/app/types/UserType";
 import { useSidebar } from "@/app/context/SidebarContext";
 import MobileMenuButton from "../components/mobile_menu_button";
+import { usePageTitle } from "@/app/hooks/usePageTitle";
 
 const roleCollection = createListCollection({
   items: [
@@ -54,6 +55,7 @@ const emptyForm = {
 };
 
 export default function AdminUsers() {
+  usePageTitle("Admin Usuários | Workê");
   const { users, loading, handleCreate, handleUpdate, handleDelete } =
     useAdmin();
   const [search, setSearch] = useState("");
