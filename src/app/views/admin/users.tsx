@@ -32,7 +32,7 @@ import { usePageTitle } from "@/app/hooks/usePageTitle";
 const roleCollection = createListCollection({
   items: [
     { label: "Cliente", value: "client" },
-    { label: "Profissional", value: "worker" },
+    { label: "Worker", value: "worker" },
     { label: "Admin", value: "admin" },
   ],
 });
@@ -40,7 +40,7 @@ const roleCollection = createListCollection({
 const roleConfig: Record<string, { label: string; color: string; bg: string }> =
   {
     client: { label: "Cliente", color: blue, bg: `${blue}15` },
-    worker: { label: "Profissional", color: "#8B5CF6", bg: "#8B5CF615" },
+    worker: { label: "Worker", color: "#8B5CF6", bg: "#8B5CF615" },
     admin: { label: "Admin", color: "#F97316", bg: "#F9731615" },
   };
 

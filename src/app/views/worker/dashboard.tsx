@@ -89,12 +89,9 @@ export default function WorkerDashboard() {
               w="40px"
               h="40px"
               borderRadius="full"
-              bg={white}
-              border="1px solid"
-              borderColor="gray.100"
+              bg={white}border="1px solid" borderColor="gray.150" shadow="md"
               alignItems="center"
               justifyContent="center"
-              shadow="sm"
               cursor="pointer"
               _hover={{ bg: "gray.50" }}
             >
@@ -141,11 +138,8 @@ export default function WorkerDashboard() {
                 <Box
                   key={s.label}
                   bg={white}
-                  borderRadius="2xl"
-                  border="1px solid"
-                  borderColor="gray.100"
+                  borderRadius="2xl" border="1px solid" borderColor="gray.150" shadow="md"
                   p="5"
-                  shadow="sm"
                   transition="all 0.2s"
                   _hover={{ shadow: "md", borderColor: s.color }}
                 >
@@ -177,10 +171,7 @@ export default function WorkerDashboard() {
             {/* Status dos serviços */}
             <Box
               bg={white}
-              borderRadius="2xl"
-              border="1px solid"
-              borderColor="gray.100"
-              shadow="sm"
+              borderRadius="2xl"border="1px solid" borderColor="gray.150" shadow="md"
               overflow="hidden"
             >
               <HStack
@@ -188,7 +179,7 @@ export default function WorkerDashboard() {
                 px="5"
                 py="4"
                 borderBottom="1px solid"
-                borderColor="gray.100"
+                borderColor="gray.150"
               >
                 <Text fontWeight="bold" color="gray.800">
                   Estado dos Serviços
@@ -261,10 +252,7 @@ export default function WorkerDashboard() {
             {/* Atividade recente */}
             <Box
               bg={white}
-              borderRadius="2xl"
-              border="1px solid"
-              borderColor="gray.100"
-              shadow="sm"
+              borderRadius="2xl"border="1px solid" borderColor="gray.150" shadow="md"
               overflow="hidden"
             >
               <HStack
@@ -272,7 +260,7 @@ export default function WorkerDashboard() {
                 px="5"
                 py="4"
                 borderBottom="1px solid"
-                borderColor="gray.100"
+                borderColor="gray.150"
               >
                 <Text fontWeight="bold" color="gray.800">
                   Atividade Recente

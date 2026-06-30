@@ -28,12 +28,17 @@ import ProfessionalProfile from "../views/worker/profile";
 import WorkerDashboard from "../views/worker/dashboard";
 import WorkerServices from "../views/worker/services";
 import WorkerInvoices from "../views/worker/invoices";
+import WorkerEarnings from "../views/worker/earnings";
 
 // Admin
 import AdminDashboard from "../views/admin/dashboard";
 import AdminUsers from "../views/admin/users";
 import AdminInvoices from "../views/admin/invoices";
 import AdminProfile from "../views/admin/profile";
+import AdminPayments from "@/app/views/admin/payments";
+import AdminServices from "@/app/views/admin/services";
+import AdminReports  from "@/app/views/admin/reports";
+
 
 // Função auxiliar para pegar a role (centralizada)
 function getUserRole(): string {
@@ -121,6 +126,7 @@ export default function AppRoutes() {
             <Route path="/worker/dashboard" element={<WorkerDashboard />} />
             <Route path="/worker/services" element={<WorkerServices />} />
             <Route path="/worker/invoices" element={<WorkerInvoices />} />
+            <Route path="/worker/earnings" element={<WorkerEarnings />} />
           </Route>
         </Route>
 
@@ -130,6 +136,9 @@ export default function AppRoutes() {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/invoices" element={<AdminInvoices />} />
+<Route path="/admin/payments" element={<AdminPayments />} />
+<Route path="/admin/services" element={<AdminServices />} />
+<Route path="/admin/reports"  element={<AdminReports />} />
             <Route path="/admin/profile" element={<AdminProfile />} />
           </Route>
         </Route>

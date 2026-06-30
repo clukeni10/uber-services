@@ -30,10 +30,7 @@ import Sidebar from "../components/sidebar";
 import { blue, white } from "@/app/utils/COLORS";
 import { useSidebar } from "@/app/context/SidebarContext";
 import MobileMenuButton from "../components/mobile_menu_button";
-import {
-  validateScheduledAt,
-  validateDescription,
-} from "@/app/utils/validators";
+import { validateScheduledAt, validateDescription, validateAddress, validatePhone } from "@/app/utils/validators";
 import { usePageTitle } from "@/app/hooks/usePageTitle";
 
 export default function WorkerDetail() {
@@ -46,30 +43,30 @@ export default function WorkerDetail() {
 
   const { sidebarW } = useSidebar();
 
-  // Controlar o estado de abertura do Modal manualmente
   const [isOpen, setIsOpen] = useState(false);
 
   const [form, setForm] = useState({
     description: "",
     scheduled_at: "",
+    address: "",
+    contact_phone: "",
   });
   const [formError, setFormError] = useState<string | null>(null);
 
   async function onSubmit() {
     if (!worker) return;
 
-    // Valida antes de enviar
     const descError = validateDescription(form.description);
-    if (descError) {
-      setFormError(descError);
-      return;
-    }
+    if (descError) { setFormError(descError); return; }
 
     const dateError = validateScheduledAt(form.scheduled_at);
-    if (dateError) {
-      setFormError(dateError);
-      return;
-    }
+    if (dateError) { setFormError(dateError); return; }
+
+    const addressError = validateAddress(form.address);
+    if (addressError) { setFormError(addressError); return; }
+
+    const phoneError = validatePhone(form.contact_phone);
+    if (phoneError) { setFormError(phoneError); return; }
 
     setFormError(null);
 
@@ -77,13 +74,14 @@ export default function WorkerDetail() {
       worker_id: worker.id,
       description: form.description,
       scheduled_at: form.scheduled_at,
+      address: form.address,
+      contact_phone: form.contact_phone,
     });
-    
+
     if (result) {
-      setIsOpen(false); // Só fecha o modal se der sucesso!
+      setIsOpen(false);
       navigate("/client/services");
     }
-    // Se der erro, o `result` será falso/nulo e o modal continuará aberto exibindo o erro.
   }
 
   if (loading)
@@ -244,9 +242,9 @@ export default function WorkerDetail() {
 
           {/* Botão contratar */}
           <Box mt="6">
-            <Dialog.Root 
-              open={isOpen} 
-              onOpenChange={(e) => setIsOpen(e.open)} 
+            <Dialog.Root
+              open={isOpen}
+              onOpenChange={(e) => setIsOpen(e.open)}
               size={{ mdDown: "full", md: "md" }}
             >
               <Dialog.Trigger asChild>
@@ -365,6 +363,36 @@ export default function WorkerDetail() {
                           />
                         </Field.Root>
 
+                        <Field.Root required>
+                          <Field.Label fontSize="xs" color="gray.500" fontWeight="semibold" mb="1">
+                            Morada do serviço
+                          </Field.Label>
+                          <Input
+                            size="sm" borderRadius="lg"
+                            placeholder="Ex: Rua X, Bairro Y, Loja 12, Luanda"
+                            value={form.address}
+                            onChange={(e) => setForm({ ...form, address: e.target.value })}
+                          />
+                          <Text fontSize="10px" color="gray.400" mt="1">
+                            Pode ser a tua casa, escritório ou estabelecimento comercial.
+                          </Text>
+                        </Field.Root>
+
+                        <Field.Root required>
+                          <Field.Label fontSize="xs" color="gray.500" fontWeight="semibold" mb="1">
+                            Contacto
+                          </Field.Label>
+                          <Input
+                            size="sm" borderRadius="lg"
+                            placeholder="9XX XXX XXX"
+                            value={form.contact_phone}
+                            onChange={(e) => setForm({ ...form, contact_phone: e.target.value.replace(/\D/g, "").slice(0, 9) })}
+                          />
+                          <Text fontSize="10px" color="gray.400" mt="1">
+                            O profissional usará este número para te contactar.
+                          </Text>
+                        </Field.Root>
+
                         {(error || formError) && (
                           <Box
                             w="full"
@@ -388,7 +416,7 @@ export default function WorkerDetail() {
                           Cancelar
                         </Button>
                       </Dialog.ActionTrigger>
-                    
+
                       <Button
                         bg={blue}
                         color={white}
@@ -398,7 +426,7 @@ export default function WorkerDetail() {
                         loading={creating}
                       >
                         Enviar pedido
-                      </Button> 
+                      </Button>
                     </Dialog.Footer>
                   </Dialog.Content>
                 </Dialog.Positioner>

@@ -9,6 +9,15 @@ function getHeaders() {
     };
 }
 
+export async function getWorkerEarnings() {
+  const res = await fetch("http://localhost:3001/api/workers/earnings", {
+    headers: getHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+  return data;
+}
+
 export async function getWorkers(params: { search?: string; category?: string; city?: string }) {
     const query = new URLSearchParams(); 
     if (params.search) query.append("search", params.search);

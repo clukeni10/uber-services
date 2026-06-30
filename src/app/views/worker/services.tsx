@@ -182,7 +182,7 @@ export default function WorkerServices() {
               borderRadius="xl"
               p="2"
               border="1px solid"
-              borderColor="gray.100"
+              borderColor="gray.150"
               gap="12px"
             >
               <Tabs.Trigger
@@ -411,13 +411,10 @@ function ServiceCard({
   return (
     <Box
       bg={white}
-      borderRadius="2xl"
-      border="1px solid"
-      borderColor="gray.100"
+      borderRadius="2xl" border="1px solid" borderColor="gray.150" shadow="md"
       p="5"
-      shadow="sm"
       transition="all 0.2s"
-      _hover={{ shadow: "md", borderColor: "gray.200" }}
+      _hover={{ shadow: "lg", borderColor: blue }}
     >
       <HStack justify="space-between" align="flex-start" mb="3">
         {/* Info do cliente */}

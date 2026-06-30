@@ -20,6 +20,9 @@ import {
   LuLogOut,
   LuChevronRight,
   LuFileText,
+  LuChartBar,
+  LuDollarSign,
+  LuWallet,
 } from "react-icons/lu";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSidebar } from "@/app/context/SidebarContext";
@@ -43,6 +46,7 @@ function getNavLinks(): NavLink[] {
     return [
       { label: "Início", href: "/worker/dashboard", icon: LuHouse },
       { label: "Serviços", href: "/worker/services", icon: LuBriefcase },
+      { label: "Rendimentos", href: "/worker/earnings", icon: LuWallet },
       { label: "Faturas", href: "/worker/invoices", icon: LuFileText },
     ];
 
@@ -51,7 +55,9 @@ function getNavLinks(): NavLink[] {
       { label: "Dashboard", href: "/admin/dashboard", icon: LuHouse },
       { label: "Utilizadores", href: "/admin/users", icon: LuUser },
       { label: "Serviços", href: "/admin/services", icon: LuBriefcase },
+      { label: "Pagamentos", href: "/admin/payments", icon: LuDollarSign },
       { label: "Faturas", href: "/admin/invoices", icon: LuFileText },
+      { label: "Relatórios", href: "/admin/reports/", icon: LuChartBar },
     ];
 
   if (role === "client")

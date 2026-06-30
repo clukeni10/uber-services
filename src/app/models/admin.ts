@@ -79,3 +79,27 @@ export async function getAdminInvoices() {
   if (!res.ok) throw new Error(data.error);
   return data;
 }
+
+export async function getAdminPaymentsOverview() {
+  const res = await fetch(`${BASE_URL}/payments/overview`, { headers: getHeaders() });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+  return data;
+}
+
+export async function getAdminServices(params?: { status?: string; search?: string }) {
+  const query = new URLSearchParams();
+  if (params?.status) query.append("status", params.status);
+  if (params?.search) query.append("search", params.search);
+  const res = await fetch(`${BASE_URL}/services/all?${query}`, { headers: getHeaders() });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+  return data;
+}
+
+export async function getReportData(type: "payments" | "services" | "workers") {
+  const res = await fetch(`${BASE_URL}/reports/data?type=${type}`, { headers: getHeaders() });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+  return data;
+}

@@ -9,14 +9,16 @@ function getHeaders() {
 }
 
 export async function createService(data: {
-  worker_id: number; 
+  worker_id: number;
   description: string;
   scheduled_at: string;
+  address: string;
+  contact_phone: string;
 }) {
   const res = await fetch(BASE_URL, {
     method: "POST",
     headers: getHeaders(),
-    body: JSON.stringify(data), // sem amount nem method
+    body: JSON.stringify(data),
   });
   const result = await res.json();
   if (!res.ok) throw new Error(result.error);

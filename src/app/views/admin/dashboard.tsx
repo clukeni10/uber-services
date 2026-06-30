@@ -139,10 +139,8 @@ export default function AdminDashboard() {
                   key={s.label}
                   bg={white}
                   borderRadius="2xl"
-                  border="1px solid"
-                  borderColor="gray.100"
+                  border="1px solid" borderColor="gray.150" shadow="md"
                   p="5"
-                  shadow="sm"
                 >
                   <Flex
                     w="40px"

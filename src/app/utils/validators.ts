@@ -50,3 +50,16 @@ export function validateBirthday(birthday: string): string | null {
 
     return null;
 }
+
+export function validateAddress(address: string): string | null {
+  if (!address.trim()) return "A morada do serviço é obrigatória.";
+  if (address.trim().length < 5) return "A morada deve ter pelo menos 5 caracteres.";
+  return null;
+}
+
+export function validatePhone(phone: string): string | null {
+  if (!phone.trim()) return "O contacto é obrigatório.";
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length < 9) return "O contacto deve ter pelo menos 9 dígitos.";
+  return null;
+}

@@ -141,13 +141,10 @@ export default function WorkerInvoices() {
                   <Box
                     key={invoice.id}
                     bg={white}
-                    borderRadius="2xl"
-                    border="1px solid"
-                    borderColor="gray.100"
+                    borderRadius="2xl"border="1px solid" borderColor="gray.150" shadow="md"
                     p="5"
-                    shadow="sm"
                     transition="all 0.2s"
-                    _hover={{ shadow: "md", borderColor: "gray.200" }}
+                    _hover={{ shadow: "lg", borderColor: blue }}
                   >
                     <HStack
                       justify="space-between"
