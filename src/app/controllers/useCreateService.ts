@@ -9,6 +9,7 @@ export function useCreateService() {
         worker_id: number;
         description: string;
         scheduled_at: string;
+        address:string;
     }) {
         setLoading(true);
         setError(null);

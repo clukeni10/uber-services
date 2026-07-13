@@ -11,6 +11,7 @@ import {
   Text,
   IconButton,
   Separator,
+  Avatar,
 } from "@chakra-ui/react";
 import {
   LuUser,
@@ -28,6 +29,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useSidebar } from "@/app/context/SidebarContext";
 import type { NavLink } from "@/app/types/NavLinkType";
 import NavItem from "./nav_item";
+import { useUser } from "@/app/controllers/useUser";
 
 function getRole(): string {
   const stored = localStorage.getItem("user");
@@ -38,6 +40,8 @@ function getRole(): string {
     return "guest";
   }
 }
+
+
 
 function getNavLinks(): NavLink[] {
   const role = getRole();
@@ -88,6 +92,7 @@ export default function Sidebar() {
   const profileRoute = getProfileRoute();
 
   const isExpanded = !collapsed || mobileOpen;
+  const { user } = useUser();
 
   return (
     <>
@@ -205,15 +210,43 @@ export default function Sidebar() {
             }}
           >
             <Flex
-              w="28px"
-              h="28px"
+              w="auto"
+              h="auto"
               borderRadius="full"
               bg={highlights}
               alignItems="center"
               justifyContent="center"
               flexShrink={0}
             >
-              <LuUser size={14} color={white} />
+              <Avatar.Root
+                w="50px"
+                h="50px"
+                borderRadius="full"
+                border="4px solid"
+                borderColor={white}
+                shadow="md"
+                flexShrink={0}
+              >
+                <Avatar.Image
+                  src={
+                    user?.image
+                      ? user.image.startsWith("data:")
+                        ? user.image
+                        : `http://localhost:3001/${user.image}`
+                      : undefined
+                  }
+                  alt={user?.name ?? "Usuário"}
+                  objectFit="cover"
+                />
+                <Avatar.Fallback
+                  name={user?.name ?? "?"}
+                  bg="#0E1B2D"
+                  p="2"
+                  color="white"
+                  fontWeight="bold"
+                  fontSize="xl"
+                />
+              </Avatar.Root>{" "}
             </Flex>
             {isExpanded && (
               <Text fontSize="sm" fontWeight={500} whiteSpace="nowrap">

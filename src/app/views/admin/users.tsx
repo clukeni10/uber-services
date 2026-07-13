@@ -18,6 +18,7 @@ import {
   Select,
   createListCollection,
   IconButton,
+  Avatar,
 } from "@chakra-ui/react";
 import { LuSearch, LuPlus, LuPencil, LuTrash } from "react-icons/lu";
 import Sidebar from "../components/sidebar";
@@ -300,7 +301,7 @@ export default function AdminUsers() {
                         transition="background 0.15s"
                       >
                         <HStack flex="2" gap="3">
-                          {u.image ? (
+                          
                             <Box
                               w="36px"
                               h="36px"
@@ -308,32 +309,27 @@ export default function AdminUsers() {
                               overflow="hidden"
                               flexShrink={0}
                             >
-                              <img
-                                src={u.image}
-                                alt={u.name}
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "cover",
-                                }}
-                              />
-                            </Box>
-                          ) : (
-                            <Flex
-                              w="36px"
-                              h="36px"
-                              borderRadius="full"
-                              bg={`${blue}15`}
-                              color={blue}
-                              alignItems="center"
-                              justifyContent="center"
-                              flexShrink={0}
-                              fontWeight="bold"
-                              fontSize="sm"
-                            >
-                              {u.name?.charAt(0).toUpperCase()}
-                            </Flex>
-                          )}
+                          <Avatar.Root w="100%" h="100%">
+              <Avatar.Image
+                src={
+                  u?.image
+                    ? `http://localhost:3001/${u.image}`
+                    : undefined
+                }
+                alt={u?.name}
+                objectFit="cover"
+              />
+
+              <Avatar.Fallback
+                name={u?.name || "?"}
+                bg="#0E1B2D"
+                p="6"
+                color="white"
+                fontWeight="bold"
+                fontSize="xl"
+              />
+            </Avatar.Root>
+            </Box>
                           <Text
                             fontSize="sm"
                             fontWeight="semibold"

@@ -64,7 +64,7 @@ export default function WorkerDashboard() {
     );
 
   return (
-    <Box display="flex" minH="100vh" bg="gray.50">
+    <Box display="flex" minH="100vh" bg="#d4d4d4">
       <Sidebar />
       <MobileMenuButton />
 

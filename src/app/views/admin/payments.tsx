@@ -1,6 +1,6 @@
 import {
   Box, Flex, HStack, VStack, Text, Heading,
-  Grid, Badge, Spinner, Center,
+  Grid, Badge, Spinner, Center, Avatar,
 } from "@chakra-ui/react";
 import {
   LuWallet, LuTrendingUp, LuCreditCard, LuArrowUp,
@@ -233,16 +233,28 @@ export default function AdminPayments() {
                       <HStack key={w.id} px="5" py="3.5" w="full" justify="space-between">
                         <HStack gap="3">
                           <Text fontSize="xs" color="gray.300" fontWeight="bold" w="16px">{i + 1}</Text>
-                          {w.image ? (
                             <Box w="32px" h="32px" borderRadius="full" overflow="hidden" flexShrink={0}>
-                              <img src={w.image} alt={w.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                            </Box>
-                          ) : (
-                            <Flex w="32px" h="32px" borderRadius="full" bg={`${blue}15`} color={blue}
-                              alignItems="center" justifyContent="center" flexShrink={0}>
-                              <LuUser size={14} />
-                            </Flex>
-                          )}
+                              <Avatar.Root w="100%" h="100%">
+              <Avatar.Image
+                src={
+                  w?.image
+                    ? `http://localhost:3001/${w.image}`
+                    : undefined
+                }
+                alt={w?.name}
+                objectFit="cover"
+              />
+
+              <Avatar.Fallback
+                name={w?.name || "?"}
+                bg="#0E1B2D"
+                p="6"
+                color="white"
+                fontWeight="bold"
+                fontSize="xl"
+              />
+            </Avatar.Root>                            </Box>
+                          
                           <VStack align="flex-start" gap="0">
                             <Text fontSize="sm" fontWeight="semibold" color="gray.800">{w.name}</Text>
                             <Text fontSize="10px" color="gray.400">{w.specialty ?? "—"} · {w.total_services} serviços</Text>

@@ -13,6 +13,7 @@ import {
   Field,
   Input,
   Badge,
+  Avatar
 } from "@chakra-ui/react";
 import {
   LuMapPin,
@@ -92,7 +93,7 @@ export default function WorkerDetail() {
     );
 
   return (
-    <Box display="flex" h="100vh" bg="gray.50">
+    <Box display="flex" h="100vh" bg="#d4d4d4">
       <Sidebar />
       <MobileMenuButton />
 
@@ -144,7 +145,7 @@ export default function WorkerDetail() {
                 mt="-30px"
                 mb="4"
               >
-                {worker?.image ? (
+               
                   <Box
                     w="64px"
                     h="64px"
@@ -154,34 +155,28 @@ export default function WorkerDetail() {
                     borderColor={white}
                     shadow="md"
                   >
-                    <img
-                      src={worker.image}
-                      alt={worker.name}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  </Box>
-                ) : (
-                  <Flex
-                    bg={blue}
-                    w="64px"
-                    h="64px"
-                    rounded="full"
-                    alignItems="center"
-                    justifyContent="center"
-                    color={white}
-                    fontSize="xl"
-                    fontWeight="bold"
-                    border="4px solid"
-                    borderColor={white}
-                    shadow="md"
-                  >
-                    {worker?.name?.charAt(0).toUpperCase() ?? "?"}
-                  </Flex>
-                )}
+                    <Avatar.Root w="100%" h="100%">
+              <Avatar.Image
+                src={
+                  worker?.image
+                    ? `http://localhost:3001/${worker.image}`
+                    : undefined
+                }
+                alt={worker?.name}
+                objectFit="cover"
+              />
+
+              <Avatar.Fallback
+                name={worker?.name || "?"}
+                bg="#0E1B2D"
+                p="6"
+                color="white"
+                fontWeight="bold"
+                fontSize="xl"
+              />
+            </Avatar.Root>
+            </Box>
+
                 <Badge
                   bg={worker?.is_available ? "#10B98115" : "gray.100"}
                   color={worker?.is_available ? "#10B981" : "gray.400"}

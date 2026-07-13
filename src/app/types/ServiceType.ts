@@ -9,6 +9,7 @@ export interface Service {
   client_name: string;
   client_image: string;
   client_phone: string;
+  address:string;
   amount: number;
   method: string;
   payment_status: string;

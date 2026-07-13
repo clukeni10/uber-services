@@ -86,7 +86,7 @@ export default function ClientProfile() {
     );
 
   return (
-    <Box display="flex" h="100vh" bg="gray.50">
+    <Box display="flex" h="100vh" bg="#d4d4d4">
       <Sidebar />
       <MobileMenuButton />
 

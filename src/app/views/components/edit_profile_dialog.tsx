@@ -24,7 +24,7 @@ import {
   FileUploadRoot,
 } from "@/components/ui/file-upload";
 import { LuPencil, LuX, LuUpload } from "react-icons/lu";
-import { validateBirthday } from "@/app/utils/validators";
+import { validateBirthday, validatePhone } from "@/app/utils/validators";
 
 // Props que el componente va a recibir
 interface EditProfileDialogProps {
@@ -65,15 +65,23 @@ export const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
   const isWorker = role === "worker";
 
   const [birthdayError, setBirthdayError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
 
   const handlePreSave = () => {
     const error = validateBirthday(form.birthday);
+    const error2 = validatePhone(form.phone);
 
     if (error) {
       setBirthdayError(error);
       return;
     }
 
+    if (error2){
+      setPhoneError(error);
+      return;
+    }
+
+    setPhoneError(null);
     setBirthdayError(null);
     onSave();
   };
@@ -81,6 +89,7 @@ export const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
     <Dialog.Root
       onOpenChange={(e) => {
         setBirthdayError(null);
+        setPhoneError(null);
         onOpenChange(e.open);
       }}
       size={{ mdDown: "full", md: "lg" }}
@@ -266,7 +275,7 @@ export const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
                     />
                   </Field.Root>
 
-                  <Field.Root>
+                  <Field.Root invalid={!!phoneError}>
                     <Field.Label
                       fontSize="xs"
                       color="gray.500"
@@ -276,13 +285,24 @@ export const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
                       Telefone
                     </Field.Label>
                     <Input
-                      size="sm"
-                      borderRadius="lg"
-                      value={form.phone}
-                      onChange={(e) =>
-                        setForm({ ...form, phone: e.target.value })
-                      }
-                    />
+  size="sm" borderRadius="lg"
+  placeholder="9XX XXX XXX"
+  inputMode="numeric"          // ← teclado numérico no mobile
+  value={form.phone}
+  onChange={(e) => {
+    // remove tudo que não seja dígito e limita a 9
+    const digits = e.target.value.replace(/\D/g, "").slice(0, 9);
+    setForm({ ...form, phone: digits });
+    if(phoneError) setPhoneError(null);
+  }}
+/>
+
+                    {/* Exibe a mensagem de erro se ela existir */}
+                    {phoneError && (
+                      <Field.ErrorText fontSize="xs" color="red.500" mt="1">
+                        {phoneError}
+                      </Field.ErrorText>
+                    )}
                   </Field.Root>
 
                   <Field.Root invalid={!!birthdayError}>

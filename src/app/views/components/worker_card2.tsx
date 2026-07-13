@@ -1,5 +1,5 @@
 import { blue, white } from "@/app/utils/COLORS";
-import { Box, HStack, Text, Badge, VStack, Flex } from "@chakra-ui/react";
+import { Box, HStack, Text, Badge, VStack, Flex, Avatar } from "@chakra-ui/react";
 import { LuBadgeCheck, LuMapPin, LuStar } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import type { Worker } from "@/app/types/WorkerType";
@@ -24,38 +24,56 @@ export default function WorkerCard({ worker }: { worker: Worker }) {
       onClick={() => navigate(`/client/workers/${worker.id}`)}
     >
       <HStack gap="3" align="flex-start">
-        {worker.image ? (
+        <Flex
+        w="52px"
+          h="52px"
+          borderRadius="full"
+          flexShrink={0}
+          bg={blue}
+          color={white}
+          alignItems="center"
+          justifyContent="center"
+          fontWeight="bold"
+          fontSize="lg"
+        >
           <Box
-            w="52px"
-            h="52px"
-            borderRadius="full"
-            border="2px solid"
-            borderColor={blue}
+w="72px"
+            h="72px"
+            rounded="full"
+            border="3px solid"
+            borderColor="white" /* Altere para string se não tiver a variável global configurada */
+            shadow="lg"
             flexShrink={0}
             overflow="hidden"
-          >
-            <img
-              src={worker.image}
-              alt={worker.name}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          </Box>
-        ) : (
-          <Flex
-            w="52px"
-            h="52px"
-            borderRadius="full"
-            flexShrink={0}
-            bg={blue}
-            color={white}
+            display="flex" 
             alignItems="center"
             justifyContent="center"
-            fontWeight="bold"
-            fontSize="lg"
+            bg="gray.100"
           >
-            {worker.name?.charAt(0).toUpperCase()}
-          </Flex>
-        )}
+
+<Avatar.Root w="100%" h="100%">
+  <Avatar.Image
+                src={
+                  worker?.image
+                    ? `http://localhost:3001/${worker.image}`
+                    : undefined
+                }
+                alt={worker?.name}
+                objectFit="cover"
+              />
+  
+              <Avatar.Fallback
+                name={worker?.name || "?"}
+                bg="#0E1B2D"
+                p="6"
+                color="white"
+                fontWeight="bold"
+                fontSize="xl"
+              />
+            </Avatar.Root>
+            </Box>
+              </Flex>
+        
         <VStack align="flex-start" gap="0.5" flex="1" minW="0">
           <HStack gap="1">
             <Text fontWeight="bold" fontSize="sm" color="gray.800">

@@ -16,10 +16,6 @@ import {
   LuCircleCheck,
   LuCircleX,
   LuBriefcase,
-  LuCalendar,
-  LuUser,
-  LuPhone,
-  LuCreditCard,
 } from "react-icons/lu";
 import Sidebar from "../components/sidebar";
 import { blue, white } from "@/app/utils/COLORS";
@@ -28,6 +24,7 @@ import type { Service } from "@/app/types/ServiceType";
 import { useSidebar } from "@/app/context/SidebarContext";
 import { useState, useEffect } from "react";
 import { usePageTitle } from "@/app/hooks/usePageTitle";
+import ServiceCard from "../components/service_card";
 
 function ActiveTimer({ startedAt }: { startedAt: string }) {
   const [elapsed, setElapsed] = useState("");
@@ -63,14 +60,6 @@ function ActiveTimer({ startedAt }: { startedAt: string }) {
   );
 }
 
-const statusConfig = {
-  pending: { label: "Pendente", color: "#F59E0B", bg: "#F59E0B15" },
-  accepted: { label: "Aceite", color: "#3B82F6", bg: "#3B82F615" },
-  active: { label: "Em curso", color: "#8B5CF6", bg: "#8B5CF615" },
-  completed: { label: "Concluído", color: "#10B981", bg: "#10B98115" },
-  cancelled: { label: "Cancelado", color: "#EF4444", bg: "#EF444415" },
-};
-
 export default function WorkerServices() {
   usePageTitle("Meus Serviços | Workê");
   const { sidebarW } = useSidebar();
@@ -101,7 +90,7 @@ export default function WorkerServices() {
     );
 
   return (
-    <Box display="flex" minH="100vh" bg="gray.50">
+    <Box display="flex" minH="100vh" bg="#d4d4d4">
       <Sidebar />
 
       <Box
@@ -399,130 +388,3 @@ function ServiceList({
   );
 }
 
-function ServiceCard({
-  service: s,
-  renderActions,
-}: {
-  service: Service;
-  renderActions?: (s: Service) => React.ReactNode;
-}) {
-  const config = statusConfig[s.status];
-
-  return (
-    <Box
-      bg={white}
-      borderRadius="2xl" border="1px solid" borderColor="gray.150" shadow="md"
-      p="5"
-      transition="all 0.2s"
-      _hover={{ shadow: "lg", borderColor: blue }}
-    >
-      <HStack justify="space-between" align="flex-start" mb="3">
-        {/* Info do cliente */}
-        <HStack gap="3">
-          {s.client_image ? (
-            <Box
-              w="44px"
-              h="44px"
-              borderRadius="full"
-              overflow="hidden"
-              flexShrink={0}
-            >
-              <img
-                src={s.client_image}
-                alt={s.client_name}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            </Box>
-          ) : (
-            <Flex
-              w="44px"
-              h="44px"
-              borderRadius="full"
-              flexShrink={0}
-              bg={`${blue}15`}
-              color={blue}
-              alignItems="center"
-              justifyContent="center"
-              fontWeight="bold"
-              fontSize="md"
-            >
-              {s.client_name?.charAt(0).toUpperCase()}
-            </Flex>
-          )}
-          <VStack align="flex-start" gap="0">
-            <Text fontWeight="bold" fontSize="sm" color="gray.800">
-              {s.client_name}
-            </Text>
-            <HStack gap="1" color="gray.400">
-              <LuPhone size={11} />
-              <Text fontSize="xs">{s.client_phone ?? "—"}</Text>
-            </HStack>
-          </VStack>
-        </HStack>
-
-        {/* Status badge */}
-        <Badge
-          bg={config.bg}
-          color={config.color}
-          borderRadius="full"
-          px="3"
-          py="1"
-          fontSize="xs"
-        >
-          {config.label}
-        </Badge>
-      </HStack>
-
-      {/* Descrição */}
-      <Box bg="gray.50" borderRadius="xl" px="4" py="3" mb="3">
-        <HStack gap="2" mb="1">
-          <LuUser size={13} color="gray" />
-          <Text fontSize="xs" color="gray.400" fontWeight="semibold">
-            Descrição
-          </Text>
-        </HStack>
-        <Text fontSize="sm" color="gray.700">
-          {s.description}
-        </Text>
-      </Box>
-
-      {/* Meta info */}
-      <HStack gap="4" flexWrap="wrap">
-        <HStack gap="1.5" color="gray.500">
-          <LuCalendar size={13} />
-          <Text fontSize="xs">
-            {s.scheduled_at
-              ? new Date(s.scheduled_at).toLocaleString("pt-PT", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              : "—"}
-          </Text>
-        </HStack>
-        <HStack gap="1.5" color="gray.500">
-          <LuCreditCard size={13} />
-          <Text fontSize="xs" fontWeight="semibold" color={blue}>
-            {s.amount ? `${parseFloat(String(s.amount)).toFixed(2)} Kz` : "—"}
-          </Text>
-        </HStack>
-        {s.category_name && (
-          <Badge
-            bg={`${blue}10`}
-            color={blue}
-            borderRadius="full"
-            px="2"
-            fontSize="10px"
-          >
-            {s.category_name}
-          </Badge>
-        )}
-      </HStack>
-
-      {/* Ações */}
-      {renderActions && renderActions(s)}
-    </Box>
-  );
-}

@@ -21,34 +21,58 @@ export function validateDescription(description: string): string | null {
     return null;
 }
 
-/**
- * Valida se o utilizador forneceu uma data de nascimento válida e se é maior de idade (18+).
- */
 export function validateBirthday(birthday: string): string | null {
-    if (!birthday) return "A data de nascimento é obrigatória.";
+  if (!birthday) return "A data de nascimento é obrigatória.";
 
-    const birthDate = new Date(birthday);
-    const now = new Date();
+  // Força o formato YYYY-MM-DD
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!dateRegex.test(birthday)) return "Formato de data inválido.";
 
-    // Verifica se a string da data é interpretável
-    if (isNaN(birthDate.getTime())) return "Data de nascimento inválida.";
+  const [year, month, day] = birthday.split("-").map(Number);
 
-    // Impede datas no futuro
-    if (birthDate >= now) return "A data de nascimento não pode ser no futuro.";
+  // Ano mínimo razoável
+  if (year < 1900 || year > new Date().getFullYear()) {
+    return "Ano de nascimento inválido.";
+  }
 
-    // Calcula a idade exata baseada no ano, mês e dia
-    let age = now.getFullYear() - birthDate.getFullYear();
-    const monthDifference = now.getMonth() - birthDate.getMonth();
-    const dayDifference = now.getDate() - birthDate.getDate();
+  // Mês entre 1 e 12
+  if (month < 1 || month > 12) return "Mês inválido.";
 
-    // Ajusta a idade caso o aniversário ainda não tenha acontecido no ano corrente
-    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
-        age--;
-    }
+  // Dia entre 1 e 31
+  if (day < 1 || day > 31) return "Dia inválido.";
 
-    if (age < 18) return "Deves ter pelo menos 18 anos de idade.";
+  const birthDate = new Date(birthday);
+  if (isNaN(birthDate.getTime())) return "Data de nascimento inválida.";
 
-    return null;
+  const now = new Date();
+  if (birthDate >= now) return "A data de nascimento não pode ser no futuro.";
+
+  // Calcula idade exata
+  let age = now.getFullYear() - birthDate.getFullYear();
+  const monthDiff = now.getMonth() - birthDate.getMonth();
+  const dayDiff = now.getDate() - birthDate.getDate();
+
+  if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+    age--;
+  }
+
+  if (age < 18) return "Deves ter pelo menos 18 anos de idade.";
+  if (age > 120) return "Data de nascimento inválida.";
+
+  return null;
+}
+
+export function validatePhone(phone: string): string | null {
+  if (!phone.trim()) return "O contacto é obrigatório.";
+
+  const digits = phone.replace(/\D/g, "");
+
+  if (digits.length !== 9) return "O contacto deve ter exatamente 9 dígitos.";
+
+  // Números angolanos começam por 9
+  if (!digits.startsWith("9")) return "Número angolano inválido. Deve começar por 9.";
+
+  return null;
 }
 
 export function validateAddress(address: string): string | null {
@@ -57,9 +81,3 @@ export function validateAddress(address: string): string | null {
   return null;
 }
 
-export function validatePhone(phone: string): string | null {
-  if (!phone.trim()) return "O contacto é obrigatório.";
-  const digits = phone.replace(/\D/g, "");
-  if (digits.length < 9) return "O contacto deve ter pelo menos 9 dígitos.";
-  return null;
-}

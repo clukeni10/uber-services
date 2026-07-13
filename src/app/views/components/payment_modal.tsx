@@ -9,7 +9,6 @@ import {
   Dialog,
   Portal,
   Field,
-  Spinner,
   Textarea,
 } from "@chakra-ui/react";
 import {
@@ -88,6 +87,11 @@ export default function PaymentModal({
   const [reviewLoading, setReviewLoading] = useState(false);
   const [reviewDone, setReviewDone] = useState(false);
 
+  // Guarda local — garante que o botão nunca fica preso em "loading"
+  // mesmo que o hook usePayment rebente ou não trate o erro.
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
+
   const {
     handlePayment,
     loading,
@@ -112,33 +116,48 @@ export default function PaymentModal({
       setRating(0);
       setComment("");
       setReviewDone(false);
+      setIsSubmitting(false);
+      setLocalError(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-
-  // Muda para a tela de sucesso APENAS quando o pagamento for confirmado 
-// E os dados da fatura já estiverem preenchidos no estado
-useEffect(() => {
-  if (success && invoiceData) {
-    console.log("Sucesso confirmado! Dados da fatura recebidos:", invoiceData);
-    setScreen("success");
-  }
-}, [success, invoiceData]);
+  // Muda para a tela de sucesso assim que o pagamento for confirmado.
+  // Não depende de invoiceData estar completo — se faltar, mostramos "—".
+  useEffect(() => {
+    if (success) {
+      setScreen("success");
+      setIsSubmitting(false);
+    }
+  }, [success]);
 
   async function onPay() {
-  if (loading) return;
-  
-  const extra: { card_last4?: string; phone?: string } = {};
-  if (selectedMethod === "card") {
-    extra.card_last4 = cardNumber.replace(/\s/g, "").slice(-4);
-  }
-  if (selectedMethod === "multicaixa") {
-    extra.phone = phone;
-  }
+    if (isSubmitting || loading) return;
 
-  // Apenas aguarda a execução do hook. Quem muda o ecrã é o useEffect!
-  await handlePayment(serviceId, selectedMethod, extra);
-}
+    setLocalError(null);
+    setIsSubmitting(true);
+
+    try {
+      const extra: { card_last4?: string; phone?: string } = {};
+      if (selectedMethod === "card") {
+        extra.card_last4 = cardNumber.replace(/\s/g, "").slice(-4);
+      }
+      if (selectedMethod === "multicaixa") {
+        extra.phone = phone;
+      }
+
+      await handlePayment(serviceId, selectedMethod, extra);
+    } catch (err) {
+      setLocalError(
+        err instanceof Error
+          ? err.message
+          : "Não foi possível concluir o pagamento. Tenta novamente.",
+      );
+    } finally {
+      // Garante sempre a saída do estado de loading, mesmo em falha silenciosa.
+      setIsSubmitting(false);
+    }
+  }
 
   async function onSubmitReview() {
     if (rating === 0) return;
@@ -158,6 +177,9 @@ useEffect(() => {
     if (success) onSuccess();
   }
 
+  const isPaying = isSubmitting || loading;
+  const displayError = localError ?? error;
+
   return (
     <Dialog.Root
       open={isOpen}
@@ -175,7 +197,9 @@ useEffect(() => {
                   {screen === "success" && "Pagamento confirmado"}
                   {screen === "review" && "Avaliar profissional"}
                 </Dialog.Title>
-                {screen !== "payment" || (!loading && !success) ? (
+                {/* Só escondemos o X enquanto o pagamento está mesmo a ser
+                    submetido — nunca fica preso escondido. */}
+                {!isPaying && (
                   <Box
                     cursor="pointer"
                     color="gray.400"
@@ -184,7 +208,7 @@ useEffect(() => {
                   >
                     <LuX size={18} />
                   </Box>
-                ) : null}
+                )}
               </HStack>
             </Dialog.Header>
 
@@ -483,10 +507,10 @@ useEffect(() => {
                     </VStack>
                   )}
 
-                  {error && (
+                  {displayError && (
                     <Box w="full" bg="red.50" borderRadius="xl" p="3">
                       <Text fontSize="xs" color="red.500">
-                        {error}
+                        {displayError}
                       </Text>
                     </Box>
                   )}
@@ -499,17 +523,11 @@ useEffect(() => {
                     size="md"
                     _hover={{ opacity: 0.9 }}
                     onClick={onPay}
-                    loading={loading}
+                    loading={isPaying}
                     loadingText="A processar..."
+                    disabled={isPaying}
                   >
-                    {loading ? (
-                      <HStack gap="2">
-                        <Spinner size="sm" color={white} />
-                        <Text>A processar...</Text>
-                      </HStack>
-                    ) : (
-                      `Confirmar pagamento — ${amount.toFixed(2)} Kz`
-                    )}
+                    {`Confirmar pagamento — ${amount.toFixed(2)} Kz`}
                   </Button>
                 </VStack>
               )}
@@ -539,58 +557,66 @@ useEffect(() => {
                     </Text>
                   </VStack>
 
-                  {/* Summary */}
-                  {invoiceData && (
-                    <Box
-                      w="full"
-                      bg="gray.50"
-                      borderRadius="xl"
-                      p="4"
-                      border="1px solid"
-                      borderColor="gray.100"
-                    >
-                      <VStack align="stretch" gap="2">
-                        <Text
-                          fontSize="xs"
-                          color="gray.400"
-                          fontWeight="semibold"
-                          textTransform="uppercase"
-                          letterSpacing="wide"
-                        >
-                          Resumo
-                        </Text>
-                        {[
-                          { label: "Referência", value: invoiceData.reference },
-                          { label: "Serviço", value: invoiceData.description },
-                          {
-                            label: "Profissional",
-                            value: invoiceData.worker.name,
-                          },
-                          {
-                            label: "Total pago",
-                            value: `${invoiceData.amount.toFixed(2)} Kz`,
-                          },
-                          {
-                            label: "Taxa (2%)",
-                            value: `${invoiceData.platform_fee.toFixed(2)} Kz`,
-                          },
-                        ].map((row) => (
-                          <HStack key={row.label} justify="space-between">
-                            <Text fontSize="xs" color="gray.500">
-                              {row.label}
-                            </Text>
-                            <Text
-                              fontSize="xs"
-                              fontWeight="semibold"
-                              color="gray.800"
-                            >
-                              {row.value}
-                            </Text>
-                          </HStack>
-                        ))}
-                      </VStack>
-                    </Box>
-                  )}
+                  {/* Summary — protegido contra invoiceData incompleto */}
+                  <Box
+                    w="full"
+                    bg="gray.50"
+                    borderRadius="xl"
+                    p="4"
+                    border="1px solid"
+                    borderColor="gray.100"
+                  >
+                    <VStack align="stretch" gap="2">
+                      <Text
+                        fontSize="xs"
+                        color="gray.400"
+                        fontWeight="semibold"
+                        textTransform="uppercase"
+                        letterSpacing="wide"
+                      >
+                        Resumo
+                      </Text>
+                      {[
+                        {
+                          label: "Referência",
+                          value: invoiceData?.reference ?? reference ?? "—",
+                        },
+                        {
+                          label: "Serviço",
+                          value: invoiceData?.description ?? "—",
+                        },
+                        {
+                          label: "Profissional",
+                          value: invoiceData?.worker?.name ?? workerName,
+                        },
+                        {
+                          label: "Total pago",
+                          value: invoiceData?.amount
+                            ? `${invoiceData.amount.toFixed(2)} Kz`
+                            : `${amount.toFixed(2)} Kz`,
+                        },
+                        {
+                          label: "Taxa (2%)",
+                          value: invoiceData?.platform_fee
+                            ? `${invoiceData.platform_fee.toFixed(2)} Kz`
+                            : "—",
+                        },
+                      ].map((row) => (
+                        <HStack key={row.label} justify="space-between">
+                          <Text fontSize="xs" color="gray.500">
+                            {row.label}
+                          </Text>
+                          <Text
+                            fontSize="xs"
+                            fontWeight="semibold"
+                            color="gray.800"
+                          >
+                            {row.value}
+                          </Text>
+                        </HStack>
+                      ))}
+                    </VStack>
+                  </Box>
 
                   <VStack gap="2" w="full">
                     {invoiceData && (

@@ -3,8 +3,9 @@ import {
   Grid, Spinner, Center, Badge,
 } from "@chakra-ui/react";
 import {
-  LuWallet, LuTrendingUp, LuTrendingDown, LuArrowUp,
+  LuWallet, LuTrendingUp,
   LuArrowDown, LuCreditCard, LuMinus,
+  LuArrowUp,
 } from "react-icons/lu";
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis,
@@ -54,7 +55,7 @@ export default function WorkerEarnings() {
   const isNeutral = growth === 0;
 
   return (
-    <Box display="flex" minH="100vh" bg="gray.50">
+    <Box display="flex" minH="100vh" bg="#d4d4d4">
       <Sidebar />
       <MobileMenuButton />
 
